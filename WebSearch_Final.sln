@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31624.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Score_Quantization", "vcxproj\Score_Quantization.vcxproj", "{FD8D5812-AEA8-48C4-A469-DC38EC69CB7E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Index_Building", "vcxproj\Index_Building.vcxproj", "{F035DDE1-C7DD-43AE-A6D6-BBA181132F43}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Query", "vcxproj\Query.vcxproj", "{8FE43E3F-F32A-4F40-BC06-50B33BD4840A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD8D5812-AEA8-48C4-A469-DC38EC69CB7E}.Debug|x64.ActiveCfg = Debug|x64
+		{FD8D5812-AEA8-48C4-A469-DC38EC69CB7E}.Debug|x64.Build.0 = Debug|x64
+		{FD8D5812-AEA8-48C4-A469-DC38EC69CB7E}.Release|x64.ActiveCfg = Release|x64
+		{FD8D5812-AEA8-48C4-A469-DC38EC69CB7E}.Release|x64.Build.0 = Release|x64
+		{F035DDE1-C7DD-43AE-A6D6-BBA181132F43}.Debug|x64.ActiveCfg = Debug|x64
+		{F035DDE1-C7DD-43AE-A6D6-BBA181132F43}.Debug|x64.Build.0 = Debug|x64
+		{F035DDE1-C7DD-43AE-A6D6-BBA181132F43}.Release|x64.ActiveCfg = Release|x64
+		{F035DDE1-C7DD-43AE-A6D6-BBA181132F43}.Release|x64.Build.0 = Release|x64
+		{8FE43E3F-F32A-4F40-BC06-50B33BD4840A}.Debug|x64.ActiveCfg = Debug|x64
+		{8FE43E3F-F32A-4F40-BC06-50B33BD4840A}.Debug|x64.Build.0 = Debug|x64
+		{8FE43E3F-F32A-4F40-BC06-50B33BD4840A}.Release|x64.ActiveCfg = Release|x64
+		{8FE43E3F-F32A-4F40-BC06-50B33BD4840A}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {09539C78-474B-49BE-B698-832F5378D944}
+	EndGlobalSection
+EndGlobal

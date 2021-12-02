@@ -1,0 +1,22 @@
+- Dataset: https://microsoft.github.io/msmarco/TREC-Deep-Learning-2020
+
+  [fulldocs-new.trec](https://msmarco.blob.core.windows.net/msmarcoranking/msmarco-docs.trec.gz);	size: 21.4GB;	number of documents: 3,213,835
+  
+- Step1:
+
+  - input buffer: 2000MB;	output buffer: 500MB
+  - Total number of output files: 7
+  - **Elapsed time:** 64min 44.8sec
+
+- Step2:
+
+  - input buffer: 3200MB;	output buffer: 800MB
+  - **7-way merge:** 7 files, so there's 1 run.
+  - ignore terms that have less than 2 postings.
+  - **Elapsed time:** 1min 41.9sec
+
+- Final files:
+
+  - `doctable.bin`: 238MB;	average length: 1185.41
+  - `lexicon.bin`: 116MB;	Total number of terms: 4,744,907
+  - `index.bin`: 2.68GB

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{274885de-aa85-43dd-b029-cb91a6648709}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Compression">
+      <UniqueIdentifier>{63cb5e5d-67ea-4fbb-82fb-42a4939945c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Implementation">
+      <UniqueIdentifier>{30b82857-0016-4cc7-a95e-28284b1b938b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Query">
+      <UniqueIdentifier>{4e3410a2-fe7a-47e4-97f4-5809fe4b7460}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

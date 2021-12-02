@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{5366fd56-4ffb-4573-8a76-4aa993989f09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Compression">
+      <UniqueIdentifier>{9fc309f4-901b-4205-a288-ee048d4b30a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Index_Building">
+      <UniqueIdentifier>{6efc06a1-0665-4ee3-a6e2-f44b35cf85e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Implementation">
+      <UniqueIdentifier>{ee6c7e2b-e2be-453e-b6d7-ffaa875e3346}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\global.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\VarBytes.h">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\DocTable.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\MemoryBuffer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lexicon.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\TermIndex.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Freq.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Freq.ipp">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\TermIndex.ipp">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\IndexBuffer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\IndexBuffer.ipp">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Index_Building\IndexBufferToMerge.h">
+      <Filter>Source\Index_Building</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Index_Building\PyInterface.h">
+      <Filter>Source\Index_Building</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\DocTable.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\MemoryBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Implementation\TermIndex_Freq.cpp">
+      <Filter>Source\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Compression\VarBytes.cpp">
+      <Filter>Source\Compression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Index_Building\IndexBufferToMerge.cpp">
+      <Filter>Source\Index_Building</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Index_Building\PyInterface.cpp">
+      <Filter>Source\Index_Building</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,36 @@
+## find non-ascii characters
+[^\x00-\x7f]
+
+## regex tokenizer
+re_tk = re.compile(r'[^\W_]+')
+re_tk.findall(string)
+
+## match token
+re.search(r'(^|[\W_])(token)([\W_]|$)', string)
+
+## remove url-like string
+re_url = re.compile(r'https?://\S+')
+string = re_url.sub('', string)
+
+## match numbers (including zero) but except leading zeros
+re_numbers = re.compile(r'0*(\d+)')
+re_numbers.sub(r' \1 ', string)
+
+## split numbers and non-numbers
+re_split_numbers = re.compile(r'\d+|\D+')
+re_split_numbers.findall(string)
+
+## pickle
+def read_obj(filename):
+    with open(filename, 'rb') as f:
+        obj = pickle.load(f)
+    return obj
+
+def write_obj(obj, filename):
+    with open(filename, 'wb') as f:
+        pickle.dump(obj, f)
+
+## flatten list
+import functools
+import operator
+functools.reduce(operator.iconcat, a, [])

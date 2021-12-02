@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{7589577c-1e1f-45cf-ad18-31b07a365df9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Compression">
+      <UniqueIdentifier>{281fbf5f-c09e-4775-a101-b0e4abfffe7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Implementation">
+      <UniqueIdentifier>{5fa8c880-a0d3-45d1-8e2f-fa7243ab3692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Experiment">
+      <UniqueIdentifier>{69071310-5dac-4420-9864-7a2d7d072efb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\DocTable.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\MemoryBuffer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Compression\VarBytes.cpp">
+      <Filter>Source\Compression</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Implementation\TermIndex_Freq.cpp">
+      <Filter>Source\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Experiment\test.cpp">
+      <Filter>Source\Experiment</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Implementation\TermIndex_Score.ipp">
+      <Filter>Source\Implementation</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\DocTable.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\global.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\IndexBuffer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\IndexBuffer.ipp">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Lexicon.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\MemoryBuffer.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\TermIndex.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\TermIndex.ipp">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\VarBytes.h">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Freq.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Freq.ipp">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Score.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\BitVector.h">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
