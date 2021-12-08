@@ -31,11 +31,14 @@
     <ClCompile Include="..\src\Implementation\TermIndex_Freq.cpp">
       <Filter>Source\Implementation</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Experiment\test.cpp">
-      <Filter>Source\Experiment</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\Implementation\TermIndex_Score.ipp">
+    <ClCompile Include="..\src\Implementation\TermIndex_Score.cpp">
       <Filter>Source\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Implementation\TermIndex_Quantized.cpp">
+      <Filter>Source\Implementation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Experiment\PyInterface.cpp">
+      <Filter>Source\Experiment</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,11 +75,38 @@
     <ClInclude Include="..\src\Implementation\TermIndex_Freq.ipp">
       <Filter>Source\Implementation</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Implementation\TermIndex_Score.h">
+    <ClInclude Include="..\src\Implementation\TermIndex_ScoreBase.h">
       <Filter>Source\Implementation</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Compression\BitVector.h">
       <Filter>Source\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\BitVector.ipp">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Score.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Score.ipp">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Quantized.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Quantized.ipp">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\IndexBuffers_ScoreBase.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Experiment\PyInterface.h">
+      <Filter>Source\Experiment</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\IndexBuffers_Score.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Experiment\tasks.ipp">
+      <Filter>Source\Experiment</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
     iterator of the map would be stored in TermIndex, so it can get the needed info.
 */
 template<typename TermInfo_t, typename Derived>
-class Lexicon {
+class _Lexicon {
 protected:
     using Map = std::map<std::string, TermInfo_t>;
     Map terms;
@@ -15,6 +15,7 @@ protected:
     std::ofstream fout;
 
 public:
+    using Val = TermInfo_t;
     using Iter = typename Map::iterator;
 
     inline size_t size() {
@@ -57,7 +58,7 @@ public:
 
 
 template<typename T, typename D>
-inline typename Lexicon<T, D>::Iter Lexicon<T, D>::get_iter(const std::string& term) {
+inline typename _Lexicon<T, D>::Iter _Lexicon<T, D>::get_iter(const std::string& term) {
     auto iter = terms.find(term);
     if (iter != terms.end()) {
         return iter;
@@ -68,13 +69,13 @@ inline typename Lexicon<T, D>::Iter Lexicon<T, D>::get_iter(const std::string& t
 }
 
 template<typename TermInfo_t, typename D>
-inline typename Lexicon<TermInfo_t, D>::Iter Lexicon<TermInfo_t, D>::add_term(const std::string& term, TermInfo_t& value) {
+inline typename _Lexicon<TermInfo_t, D>::Iter _Lexicon<TermInfo_t, D>::add_term(const std::string& term, TermInfo_t& value) {
     auto [iter, is_new] = terms.try_emplace(term, value);
     return iter;
 }
 
 template<typename TermInfo_t, typename D>
-inline typename Lexicon<TermInfo_t, D>::Iter Lexicon<TermInfo_t, D>::append_term(const std::string& term, TermInfo_t& value) {
+inline typename _Lexicon<TermInfo_t, D>::Iter _Lexicon<TermInfo_t, D>::append_term(const std::string& term, TermInfo_t& value) {
     if (terms.size() > 0) {
         // use hint
         return terms.try_emplace(std::prev(terms.end()), term, value);
@@ -83,7 +84,7 @@ inline typename Lexicon<TermInfo_t, D>::Iter Lexicon<TermInfo_t, D>::append_term
 }
 
 template<typename T, typename D>
-inline void Lexicon<T, D>::read_all() {
+inline void _Lexicon<T, D>::read_all() {
     try {
         while (true) {
             static_cast<D*>(this)->read_next(); // static polymorphism
@@ -94,6 +95,6 @@ inline void Lexicon<T, D>::read_all() {
 }
 
 template<typename T, typename D>
-inline void Lexicon<T, D>::clear() {
+inline void _Lexicon<T, D>::clear() {
     terms.clear();
 }

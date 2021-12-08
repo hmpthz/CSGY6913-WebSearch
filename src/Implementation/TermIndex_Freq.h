@@ -12,7 +12,7 @@ struct TermInfo_Freq {
     TermInfo_Freq() :start_off(-1), n_blocks(0), n_docs(0) {}
 };
 
-class Lexicon_Freq :public Lexicon<TermInfo_Freq, Lexicon_Freq> {
+class Lexicon_Freq :public _Lexicon<TermInfo_Freq, Lexicon_Freq> {
 public:
     /*
         text format:
@@ -35,11 +35,11 @@ struct BlockMeta_Freq {
     BlockMeta_Freq() :last_did(0), did_bsize(0), freq_bsize(0) {} // WHY PMR needs this default constructor ????
 };
 
-class _TermIndex_Freq :public TermIndex<BlockMeta_Freq, Lexicon_Freq::Iter, _TermIndex_Freq> {
-    using TermIndex::TermIndex; // C++11, inherit all constructors;
-    using Base = TermIndex<BlockMeta_Freq, Lexicon_Freq::Iter, _TermIndex_Freq>;
-    friend Base; // IMPORTANT!! make sure base class can access protected derived class members
+class _TermIndex_Freq :public _TermIndex<BlockMeta_Freq, Lexicon_Freq::Iter, _TermIndex_Freq> {
+    using _TermIndex::_TermIndex; // C++11, inherit all constructors;
 public:
+    using Base = _TermIndex<BlockMeta_Freq, Lexicon_Freq::Iter, _TermIndex_Freq>;
+    friend Base; // IMPORTANT!! make sure base class can access protected derived class members
     friend class IndexForwardIter_Freq;
     template<uint32_t> friend class IndexBackInserter_Freq;
 
@@ -65,14 +65,14 @@ public:
 
 
 
-class IndexForwardIter_Freq :public IndexForwardIter<_TermIndex_Freq, IndexForwardIter_Freq> {
-    using B = IndexForwardIter<_TermIndex_Freq, IndexForwardIter_Freq>;
-    friend B;
+class IndexForwardIter_Freq :public _IndexForwardIter<_TermIndex_Freq, IndexForwardIter_Freq> {
 protected:
     vector_u32 freq_cache;
 
 public:
-    IndexForwardIter_Freq(_TermIndex_Freq& _r) :B(_r) {
+    using Base = _IndexForwardIter<_TermIndex_Freq, IndexForwardIter_Freq>;
+    friend Base;
+    IndexForwardIter_Freq(_TermIndex_Freq& _r) :Base(_r) {
         freq_cache.reserve(g::RESERVE);
     }
 
@@ -81,24 +81,26 @@ public:
 
 protected:
     void clear_cache();
+    void clear_other_cursor() {}
     void load_other_cache();
-    void skip_one_block();
+    void step_block();
+    inline void step_cache() { cur_cache++; }
 };
 
 
 
 template<uint32_t BLOCK>
-class IndexBackInserter_Freq :public IndexBackInserter<_TermIndex_Freq, BLOCK, IndexBackInserter_Freq<BLOCK> > {
-    // base class is not instantiated, so compiler doesn't know base class members' names!!
-    // HAVE TO use *this* or *Base::* due to name-lookup
-    using B = IndexBackInserter<_TermIndex_Freq, BLOCK, IndexBackInserter_Freq<BLOCK> >;
-    friend B;
+class IndexBackInserter_Freq :public _IndexBackInserter<_TermIndex_Freq, BLOCK, IndexBackInserter_Freq<BLOCK> > {
 protected:
     vector_u32 freq_cache;
 
 public:
+    // base class is not instantiated, so compiler doesn't know base class members' names!!
+    // HAVE TO use *this* or *Base::* due to name-lookup
+    using B = _IndexBackInserter<_TermIndex_Freq, BLOCK, IndexBackInserter_Freq<BLOCK> >;
+    friend B;
     IndexBackInserter_Freq(_TermIndex_Freq& _r) :B(_r) {
-        B::construct();
+        B::construct(); freq_cache.reserve(g::RESERVE);
     }
 
 protected:

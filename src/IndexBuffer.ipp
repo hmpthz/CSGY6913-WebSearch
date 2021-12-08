@@ -1,8 +1,8 @@
-#include <filesystem>
+#include "IndexBuffer.h"
 
 
 template<typename I, typename L>
-inline void IndexBufferBase<I, L>::clear(bool clear_Lexicon) {
+inline void _IndexBufferBase<I, L>::clear(bool clear_Lexicon) {
     ilist.clear();
     if (clear_Lexicon) {
         lex.clear();
@@ -10,7 +10,7 @@ inline void IndexBufferBase<I, L>::clear(bool clear_Lexicon) {
 }
 
 
-template<typename SrcBuf_t, typename DstBuf_t>
+template<bool N_DOCS, typename SrcBuf_t, typename DstBuf_t>
 void Transfer::front_to_back(SrcBuf_t& srcbuf, DstBuf_t& dstbuf) {
     auto& srcindex = srcbuf.front();
     auto& dstindex = dstbuf.back();
@@ -20,7 +20,7 @@ void Transfer::front_to_back(SrcBuf_t& srcbuf, DstBuf_t& dstbuf) {
     while (true) {
         try {
             if (srciter.has_next()) {
-                dstiter.append(srciter.next());
+                dstiter.append<N_DOCS>(srciter.next());
             }
             else if (srcindex.is_endfile()) {
                 break;
@@ -46,16 +46,53 @@ void Transfer::front_to_back(SrcBuf_t& srcbuf, DstBuf_t& dstbuf) {
     }
 }
 
+template<bool N_DOCS, typename SrcBuf_t, typename DstBuf_t>
+void Transfer::all_data(SrcBuf_t& srcbuf, DstBuf_t& dstbuf) {
+    srcbuf.read_fill();
+
+    while (true) {
+        auto info = srcbuf.front().info;
+        dstbuf.append_empty_index(g::ikey(info));
+        // copy "Lexicon::Val.n_docs" as well
+        if constexpr (!N_DOCS) {
+            g::ival(dstbuf.back().info).n_docs = g::ival(info).n_docs;
+        }
+        // if don't have to write doc_id file, copy "Lexicon::Val.start_off" as well
+        if (!dstbuf.write_did) {
+            g::ival(dstbuf.back().info).start_off = g::ival(info).start_off;
+        }
+
+        front_to_back<N_DOCS>(srcbuf, dstbuf);
+
+        srcbuf.erase_front();
+        if (srcbuf.is_empty()) {
+            srcbuf.read_fill();
+            // still empty, input buffer has been exhausted
+            if (srcbuf.is_empty()) {
+                break;
+            }
+        }
+    }
+
+    dstbuf.write_all();
+    dstbuf.clear(true);
+
+    srcbuf.close_fin();
+    srcbuf.lex.close_fin();
+    dstbuf.close_fout();
+    dstbuf.lex.close_fout();
+}
+
 
 template<typename I, typename L, typename D>
-inline void Transfer::InputBuffer<I, L, D>::erase_front() {
+inline void InputBuffer::_Base<I, L, D>::erase_front() {
     B::lex.erase(B::ilist.front().info);
     B::ilist.pop_front();
 }
 
 template<typename I, typename L, typename D>
-inline void Transfer::InputBuffer<I, L, D>::read_fill() {
-    std::cout << "Transfer::InputBuffer::read_fill\n";
+inline void InputBuffer::_Base<I, L, D>::read_fill() {
+    std::cout << "InputBuffer::read_fill\n";
 
     try {
         while (!B::is_full()) {
@@ -69,27 +106,21 @@ inline void Transfer::InputBuffer<I, L, D>::read_fill() {
     // Lexicon EndInFile Exception
     catch (g::Exception) {}
 
-    std::cout << "Transfer::InputBuffer::read_fill END\n";
-}
-
-template<typename I, typename L, typename D>
-inline void Transfer::InputBuffer<I, L, D>::open_fin(const char* filename) {
-    fsize = std::filesystem::file_size(filename);
-    fin.open(filename, std::ios::binary);
+    std::cout << "InputBuffer::read_fill END\n";
 }
 
 
-template<typename I, typename L, typename D>
-inline void Transfer::OutputBuffer<I, L, D>::append_empty_index(const std::string& term) {
-    TermInfo_Freq val;
+template<typename I, typename Lexicon_t, typename D>
+inline void OutputBuffer::_Base<I, Lexicon_t, D>::append_empty_index(const std::string& term) {
+    typename Lexicon_t::Val val;
     // create an Lexicon item with initial values.
     auto lex_iter = B::lex.append_term(term, val);
     B::ilist.emplace_back(B::memcnt, lex_iter);
 }
 
 template<typename I, typename L, typename D>
-inline void Transfer::OutputBuffer<I, L, D>::write_except_back() {
-    std::cout << "Transfer::OutputBuffer::write_except_back\n";
+inline void OutputBuffer::_Base<I, L, D>::write_except_back() {
+    std::cout << "OutputBuffer::write_except_back\n";
 
     // write except last one
     if (B::ilist.size() > 1) {
@@ -104,18 +135,18 @@ inline void Transfer::OutputBuffer<I, L, D>::write_except_back() {
             }
         }
     }
+    // IMPORTANT!! don't write the last index
+    //if (g::ival(B::ilist.back().info).n_docs >= min_docs) {
+    //    // last one don't write terminator and lexicon
+    //    static_cast<D*>(this)->index_write(false, B::ilist.back());
+    //}
 
-    if (g::ival(B::ilist.back().info).n_docs >= min_docs) {
-        // last one don't write terminator and lexicon
-        static_cast<D*>(this)->index_write(false, B::ilist.back());
-    }
-
-    std::cout << "Transfer::OutputBuffer::write_except_back END\n";
+    std::cout << "OutputBuffer::write_except_back END\n";
 }
 
 template<typename I, typename L, typename D>
-inline void Transfer::OutputBuffer<I, L, D>::write_all() {
-    std::cout << "Transfer::OutputBuffer::write_all\n";
+inline void OutputBuffer::_Base<I, L, D>::write_all() {
+    std::cout << "OutputBuffer::write_all\n";
 
     for (auto iter = B::ilist.begin(); iter != B::ilist.end(); iter++) {
         // ignore terms that too few docs contain 
@@ -127,11 +158,11 @@ inline void Transfer::OutputBuffer<I, L, D>::write_all() {
         }
     }
 
-    std::cout << "Transfer::OutputBuffer::write_all END\n";
+    std::cout << "OutputBuffer::write_all END\n";
 }
 
 template<typename I, typename L, typename D>
-inline void Transfer::OutputBuffer<I, L, D>::erase_except_back() {
+inline void OutputBuffer::_Base<I, L, D>::erase_except_back() {
     auto iter = B::ilist.begin();
     auto backiter = std::prev(B::ilist.end());
     while (iter != backiter) {
@@ -139,7 +170,9 @@ inline void Transfer::OutputBuffer<I, L, D>::erase_except_back() {
         B::lex.erase(iter->info);
         iter = B::ilist.erase(iter);
     }
-    // the last one still needs to clear data
-    B::ilist.front().update_start_did();
-    B::ilist.front().clear();
+    // IMPORTANT!! don't clear the last index
+    //if (g::ival(B::ilist.front().info).n_docs >= min_docs) {
+    //    B::ilist.front().update_start_did();
+    //    B::ilist.front().clear();
+    //}
 }

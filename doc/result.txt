@@ -4,19 +4,19 @@
   
 - Step1:
 
-  - input buffer: 2000MB;	output buffer: 500MB
+  - input buffer: 2100MB;	output buffer: 650MB
   - Total number of output files: 7
-  - **Elapsed time:** 64min 44.8sec
+  - **Elapsed time:** 63min 51.2sec
 
 - Step2:
 
   - input buffer: 3200MB;	output buffer: 800MB
   - **7-way merge:** 7 files, so there's 1 run.
   - ignore terms that have less than 2 postings.
-  - **Elapsed time:** 1min 41.9sec
+  - **Elapsed time:** 1min 39.4sec
 
 - Final files:
 
   - `doctable.bin`: 238MB;	average length: 1185.41
-  - `lexicon.bin`: 116MB;	Total number of terms: 4,744,907
-  - `index.bin`: 2.68GB
+  - `lexicon.bin`: 51MB;	Total number of terms: 2,142,791
+  - `index.bin`: 2.63GB

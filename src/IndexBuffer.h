@@ -3,7 +3,7 @@
 
 
 template<typename Index_t, typename Lexicon_t>
-class IndexBufferBase :public BufferBase {
+class _IndexBufferBase :public BufferBase {
 protected:
     using List = std::pmr::list<Index_t>;
     List ilist;
@@ -12,7 +12,10 @@ public:
     using Iter = typename List::iterator;
     Lexicon_t lex;
 
-    IndexBufferBase() :ilist(&memcnt) {}
+    _IndexBufferBase() :ilist(&memcnt) {}
+    inline size_t size() {
+        return ilist.size();
+    }
     inline bool is_empty() {
         return ilist.empty();
     }
@@ -26,20 +29,34 @@ namespace Transfer {
     /* transfer a single index object
     input and output buffer may be differnt types, so BackInserter are responsible for conversion
     before transfer, may append an empty index at the back of output buffer
-    after transfer, front index and lexicon item of input buffer may be erased */
-    template<typename SrcBuf_t, typename DstBuf_t>
+    after transfer, front index and lexicon item of input buffer may be erased
+    [params]
+    (N_DOCS) see "IndexBackInserter.append" */
+    template<bool N_DOCS = false, typename SrcBuf_t, typename DstBuf_t>
     static void front_to_back(SrcBuf_t& srcbuf, DstBuf_t& dstbuf);
 
+    /* transfer all data from input buffer to output buffer
+    before the transfer, both buffers should be empty and files are opened
+    after the transfer, both buffers will be empty and files are closed
+    [params]
+    (N_DOCS) see "IndexBackInserter.append"
+        if it's false, when output buffer append a new index, copy "Lexicon::Val.n_docs" as well
+        index can get the true n_docs directly instead of incrementing by 1 for each append.
+        so that BM25 score can compute the correct result while appending */
+    template<bool N_DOCS = false, typename SrcBuf_t, typename DstBuf_t>
+    static void all_data(SrcBuf_t& srcbuf, DstBuf_t& dstbuf);
+}
 
+
+namespace InputBuffer {
     template<typename Index_t, typename Lexicon_t, typename Derived>
-    class InputBuffer :public IndexBufferBase<Index_t, Lexicon_t> {
-        using B = IndexBufferBase<Index_t, Lexicon_t>;
+    class _Base :public _IndexBufferBase<Index_t, Lexicon_t> {
     protected:
         std::ifstream fin;
-        uint64_t fsize;
 
     public:
-        Index_t& front() {
+        using B = _IndexBufferBase<Index_t, Lexicon_t>;
+        inline Index_t& front() {
             return B::ilist.front();
         }
         /* pass correct arguments for TermIndex.try_read_blocks method */
@@ -50,33 +67,32 @@ namespace Transfer {
         /* read lexicon items and blocks of associated index, until buffer is full */
         void read_fill();
 
-        void open_fin(const char* filename);
+        void open_fin(const char* filename) {
+            fin.open(filename, std::ios::binary);
+        }
         void close_fin() {
             if (fin.is_open()) fin.close();
         }
-        uint64_t get_fsize() { return fsize; }
     };
+}
 
 
+namespace OutputBuffer {
     template<typename Index_t, typename Lexicon_t, typename Derived>
-    class OutputBuffer :public IndexBufferBase<Index_t, Lexicon_t> {
-        using B = IndexBufferBase<Index_t, Lexicon_t>;
+    class _Base :public _IndexBufferBase<Index_t, Lexicon_t> {
     protected:
         std::ofstream fout;
-        bool write_did;
-        uint32_t min_docs;
 
     public:
-        OutputBuffer() : B() { set_params(); }
-        /* [params]
-        (write_did) whether var-bytes doc_id will be written
-        in some case different types can share the same doc_id index file
-        (min_docs) minimum # of docs that a term should contain in order to be written
+        using B = _IndexBufferBase<Index_t, Lexicon_t>;
+        /* whether var-bytes doc_id will be written
+        in some case different types can share the same doc_id index file */
+        bool write_did;
+        /* minimum # of docs that a term should contain in order to be written
         many terms only occur in 1 or 2 documents, may filter them to reduce file size */
-        void set_params(bool _write_did = true, uint32_t _min_docs = 0) {
-            write_did = _write_did; min_docs = _min_docs;
-        }
-        Index_t& back() {
+        uint32_t min_docs;
+        _Base() :B(), write_did(true), min_docs(0) {}
+        inline Index_t& back() {
             return B::ilist.back();
         }
         /* pass correct arguments for TermIndex.write method */
@@ -97,7 +113,7 @@ namespace Transfer {
         void close_fout() {
             if (fout.is_open()) fout.close();
         }
-    }; 
+    };
 }
 
 

@@ -87,13 +87,8 @@ bool is_postingsbuf_empty(Builder* builder) {
     return builder->postingbuf.is_empty();
 }
 
-void merge(Builder* builder, bool ignore) {
-    if (ignore) {
-        builder->outputbuf.set_params(true, 2);
-    }
-    else {
-        builder->outputbuf.set_params();
-    }
+void merge(Builder* builder, uint32_t min_docs) {
+    builder->outputbuf.min_docs = min_docs;
 
     // read input files
     for (auto& inputbuf : builder->inputbufs) {
@@ -107,10 +102,11 @@ void merge(Builder* builder, bool ignore) {
         auto& inputbuf = builder->inputbufs[min_i];
         // front and back are not the same term
         if (builder->outputbuf.is_empty() || g::ikey(inputbuf.front().info) != g::ikey(builder->outputbuf.back().info)) {
-            builder->outputbuf.append_empty_index(g::ikey(inputbuf.front().info));
+            auto info = inputbuf.front().info;
+            builder->outputbuf.append_empty_index(g::ikey(info));
         }
 
-        Transfer::front_to_back(inputbuf, builder->outputbuf);
+        Transfer::front_to_back<true>(inputbuf, builder->outputbuf);
 
         inputbuf.erase_front();
         if (inputbuf.is_empty()) {

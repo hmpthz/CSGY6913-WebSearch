@@ -1,7 +1,7 @@
 
 
 template<typename B, typename LexiconIter_t, typename D>
-inline TermIndex<B, LexiconIter_t, D>::TermIndex(MemoryCounter& memcnt, LexiconIter_t& iter) :
+inline _TermIndex<B, LexiconIter_t, D>::_TermIndex(MemoryCounter& memcnt, LexiconIter_t& iter) :
     bytes(&memcnt), blocks_meta(&memcnt), info(iter) {
     start_did = 0;
     fpos = g::ival(info).start_off;
@@ -9,14 +9,14 @@ inline TermIndex<B, LexiconIter_t, D>::TermIndex(MemoryCounter& memcnt, LexiconI
 }
 
 template<typename Block_t, typename LexiconIter_t, typename Derived>
-inline void TermIndex<Block_t, LexiconIter_t, Derived>::update_start_did() {
+inline void _TermIndex<Block_t, LexiconIter_t, Derived>::update_start_did() {
     // used for further blocks take doc_id difference
     start_did = blocks_meta.back().last_did;
 }
 
 template<typename B, typename L, typename D>
 template<bool LIMIT, typename ...inFiles>
-inline void TermIndex<B, L, D>::try_read_blocks(inFiles&&... infiles) {
+inline void _TermIndex<B, L, D>::try_read_blocks(inFiles&&... infiles) {
     if (block_size() > 0) {
         update_start_did();
         static_cast<D*>(this)->clear();
@@ -44,7 +44,7 @@ inline void TermIndex<B, L, D>::try_read_blocks(inFiles&&... infiles) {
 
 
 template<typename TermIndex_t, typename D>
-inline IndexForwardIter<TermIndex_t, D>::IndexForwardIter(TermIndex_t& _r) :r(_r) {
+inline _IndexForwardIter<TermIndex_t, D>::_IndexForwardIter(TermIndex_t& _r) :r(_r) {
     cur_cache = 0;
     cur_block = 0;
     cur_byte = 0;
@@ -61,7 +61,7 @@ inline IndexForwardIter<TermIndex_t, D>::IndexForwardIter(TermIndex_t& _r) :r(_r
 }
 
 template<typename T, typename D>
-inline void IndexForwardIter<T, D>::load_cache() {
+inline void _IndexForwardIter<T, D>::load_cache() {
     // undifference doc_id
     uint32_t pre_did;
     if (cur_block > 0) {
@@ -80,7 +80,7 @@ inline void IndexForwardIter<T, D>::load_cache() {
 }
 
 template<typename T, typename D>
-inline bool IndexForwardIter<T, D>::has_next() {
+inline bool _IndexForwardIter<T, D>::has_next() {
     // cache is exhausted, need to load
     if (cur_cache >= did_cache.size()) {
         static_cast<D*>(this)->clear_cache();
@@ -89,6 +89,7 @@ inline bool IndexForwardIter<T, D>::has_next() {
             // set byte cursor to 0
             cur_block = 0;
             cur_byte = 0;
+            static_cast<D*>(this)->clear_other_cursor();
             // index end in memory
             return false;
         }
@@ -100,19 +101,20 @@ inline bool IndexForwardIter<T, D>::has_next() {
 }
 
 template<typename T, typename D>
-inline bool IndexForwardIter<T, D>::has_nextGEQ(uint32_t target_did) {
+inline bool _IndexForwardIter<T, D>::has_nextGEQ(uint32_t target_did) {
     // cache is exhausted, or the current cache isn't the target block
     while (cur_cache >= did_cache.size() || did_cache.back() < target_did) {
         static_cast<D*>(this)->clear_cache();
         // search through blocks
         while (cur_block < r.block_size() && r.blocks_meta[cur_block].last_did < target_did) {
-            static_cast<D*>(this)->skip_one_block();
+            static_cast<D*>(this)->step_block();
         }
         // blocks in memory is exhausted
         if (cur_block >= r.block_size()) {
             // set byte cursor to 0
             cur_block = 0;
             cur_byte = 0;
+            static_cast<D*>(this)->clear_other_cursor();
             // index end in memory
             return false;
         }
@@ -123,7 +125,7 @@ inline bool IndexForwardIter<T, D>::has_nextGEQ(uint32_t target_did) {
     }
 
     // search through cache to get nextGEQ
-    for (; cur_cache < did_cache.size(); cur_cache++) {
+    for (; cur_cache < did_cache.size(); static_cast<D*>(this)->step_cache()) {
         if (did_cache[cur_cache] >= target_did) {
             break;
         }
@@ -133,7 +135,9 @@ inline bool IndexForwardIter<T, D>::has_nextGEQ(uint32_t target_did) {
 
 
 template<typename T, uint32_t BLOCK, typename D>
-inline void IndexBackInserter<T, BLOCK, D>::construct() {
+inline void _IndexBackInserter<T, BLOCK, D>::construct() {
+    did_cache.reserve(g::RESERVE);
+
     if (r.block_size() > 0) {
         uint32_t pre_did;
         if (r.block_size() > 1) {
@@ -147,18 +151,20 @@ inline void IndexBackInserter<T, BLOCK, D>::construct() {
 }
 
 template<typename T, uint32_t BLOCK, typename D>
-inline void IndexBackInserter<T, BLOCK, D>::destruct() {
+inline void _IndexBackInserter<T, BLOCK, D>::destruct() {
     if (did_cache.size() > 0) {
         unload_cache();
     }
 }
 
 template<typename T, uint32_t BLOCK, typename D>
-template<typename Arg>
-inline void IndexBackInserter<T, BLOCK, D>::append(Arg p) {
+template<bool N_DOCS, typename Arg>
+inline void _IndexBackInserter<T, BLOCK, D>::append(Arg p) {
     static_cast<D*>(this)->_append(p);
-    // update term info
-    g::ival(r.info).n_docs++;
+    if constexpr (N_DOCS) {
+        // update term info
+        g::ival(r.info).n_docs++;
+    }
     // check if cache is full
     if (did_cache.size() >= BLOCK) {
         unload_cache();
@@ -166,7 +172,7 @@ inline void IndexBackInserter<T, BLOCK, D>::append(Arg p) {
 }
 
 template<typename T, uint32_t BLOCK, typename D>
-inline void IndexBackInserter<T, BLOCK, D>::unload_cache() {
+inline void _IndexBackInserter<T, BLOCK, D>::unload_cache() {
     // difference doc_id
     uint32_t pre_did;
     if (r.block_size() > 0) {

@@ -50,7 +50,7 @@ def init_dll(arg) -> ctypes.CDLL:
     cdll.write_doctable.argtypes = [ctypes.c_void_p]
     cdll.is_postingsbuf_empty.argtypes = [ctypes.c_void_p]
     cdll.is_postingsbuf_empty.restype = ctypes.c_bool
-    cdll.merge.argtypes = [ctypes.c_void_p, ctypes.c_bool]
+    cdll.merge.argtypes = [ctypes.c_void_p, ctypes.c_uint32]
     return cdll
 
 
@@ -97,7 +97,7 @@ def step1(arg) -> int:
             # end of doc content
             if doc_id % 1000 == 0:
                 percent = cdll.postingbuf_capacity_percent(cbuilder)
-                print(f'{f"{doc_id} docs;":<20s} buffer capacity:{percent:5.2f}%')
+                print(f'{f"{doc_id:,} docs;":<20s} buffer capacity:{percent:5.2f}%')
             # join all lines in one text string then apply regex and tokenize
             tokens = [s.encode('utf-8') for s in tokenize(''.join(lines))]
             # add doctable
@@ -174,7 +174,7 @@ def step2(arg):
             print('output lexicon: ', out_lexicon_file)
             print('')
             # merge
-            cdll.merge(cbuilder, False)
+            cdll.merge(cbuilder, 0)
 
         # next run
         run += 1
@@ -201,8 +201,8 @@ def step2(arg):
     print('output index:   ', out_index_file)
     print('output lexicon: ', out_lexicon_file)
     print('')
-    # final merge, ignore terms that only 1 doc contains
-    cdll.merge(cbuilder, True)
+    # final merge, only write terms that contains at least 4 postings
+    cdll.merge(cbuilder, 4)
     cdll.delete_Builder(cbuilder)
 
 

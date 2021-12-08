@@ -13,19 +13,29 @@
   <ItemGroup>
     <ClCompile Include="..\src\Compression\VarBytes.cpp" />
     <ClCompile Include="..\src\DocTable.cpp" />
-    <ClCompile Include="..\src\Experiment\test.cpp" />
+    <ClCompile Include="..\src\Experiment\PyInterface.cpp" />
     <ClCompile Include="..\src\Implementation\TermIndex_Freq.cpp" />
-    <ClCompile Include="..\src\Implementation\TermIndex_Score.ipp" />
+    <ClCompile Include="..\src\Implementation\TermIndex_Quantized.cpp" />
+    <ClCompile Include="..\src\Implementation\TermIndex_Score.cpp" />
     <ClCompile Include="..\src\MemoryBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Compression\BitVector.h" />
+    <ClInclude Include="..\src\Compression\BitVector.ipp" />
     <ClInclude Include="..\src\Compression\VarBytes.h" />
     <ClInclude Include="..\src\DocTable.h" />
+    <ClInclude Include="..\src\Experiment\PyInterface.h" />
+    <ClInclude Include="..\src\Experiment\tasks.ipp" />
     <ClInclude Include="..\src\global.h" />
+    <ClInclude Include="..\src\Implementation\IndexBuffers_Score.h" />
+    <ClInclude Include="..\src\Implementation\IndexBuffers_ScoreBase.h" />
     <ClInclude Include="..\src\Implementation\TermIndex_Freq.h" />
     <ClInclude Include="..\src\Implementation\TermIndex_Freq.ipp" />
+    <ClInclude Include="..\src\Implementation\TermIndex_Quantized.h" />
+    <ClInclude Include="..\src\Implementation\TermIndex_Quantized.ipp" />
     <ClInclude Include="..\src\Implementation\TermIndex_Score.h" />
+    <ClInclude Include="..\src\Implementation\TermIndex_Score.ipp" />
+    <ClInclude Include="..\src\Implementation\TermIndex_ScoreBase.h" />
     <ClInclude Include="..\src\IndexBuffer.h" />
     <ClInclude Include="..\src\IndexBuffer.ipp" />
     <ClInclude Include="..\src\Lexicon.h" />
@@ -43,13 +53,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>

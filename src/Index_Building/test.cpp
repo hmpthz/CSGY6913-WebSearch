@@ -69,13 +69,13 @@ public:
     }
 
     void test() {
-        open_fin("D:\\hzflp\\Briefcase\\Projects\\WebSearch_Final\\out\\lexicon.bin");
+        open_fin("D:\\Downloads\\WSE_index\\lexicon.bin");
         read_all();
         close_fin();
 
         std::vector<_lexitem> arr(terms.begin(), terms.end());
         std::sort(arr.begin(), arr.end(), _lexicon::greater);
-        open_fout("D:\\hzflp\\Briefcase\\Projects\\WebSearch_Final\\out\\sorted_terms.txt");
+        open_fout("D:\\Downloads\\WSE_index\\sorted_terms.txt");
         for (auto& item : arr) {
             fout << item.first << ' ' << item.second.n_docs << '\n';
         }
@@ -85,11 +85,11 @@ public:
 
 
 int main() {
-    //_lexicon().test();
-    DocTable doctable;
-    doctable.open_fin("D:\\Downloads\\WSE_index\\doctable.bin");
-    doctable.read_all();
-    std::cout << doctable.get_avg_len();
+    _lexicon().test();
+    //DocTable doctable;
+    //doctable.open_fin("D:\\Downloads\\WSE_index\\doctable.bin");
+    //doctable.read_all();
+    //std::cout << doctable.get_avg_len();
 
     return 0;
 }

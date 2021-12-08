@@ -22,7 +22,7 @@ void OutputBufferToMerge::transfer_from_postings(PostingsBuffer& srcbuf) {
         auto dstiter = ilist.back().back_inserter();
         for (auto& p : posting_vec) {
             try {
-                dstiter.append(p);
+                dstiter.append<true>(p);
             }
             // BufferFull Exception
             catch (g::Exception) {

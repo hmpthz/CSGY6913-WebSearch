@@ -4,7 +4,7 @@
 
 
 template<typename Block_t, typename LexiconIter_t, typename Derived>
-class TermIndex {
+class _TermIndex {
 protected:
     /* "pre_did" for the first block in memory, used for taking difference
     initial state start_did = 0.
@@ -26,7 +26,7 @@ public:
     (memcnt) MemoryResource Counter, limit buffer size
     (iter) associated Lexicon iter
     */
-    TermIndex(MemoryCounter& memcnt, LexiconIter_t& iter);
+    _TermIndex(MemoryCounter& memcnt, LexiconIter_t& iter);
     inline uint32_t block_size() {
         return (uint32_t)blocks_meta.size();
     }
@@ -38,8 +38,8 @@ public:
     should declare friend class for iterators */
     //ForwardIter begin(...);
     //BackInserter back_inserter(...);
-    template<typename, typename> friend class IndexForwardIter;
-    template<typename, uint32_t, typename> friend class IndexBackInserter;
+    template<typename, typename> friend class _IndexForwardIter;
+    template<typename, uint32_t, typename> friend class _IndexBackInserter;
 
     /* read blocks until LIMIT is reached or buffer is full
     should check is_endfile() before
@@ -77,7 +77,7 @@ public:
     (but all have doc_ids)
 */
 template<typename TermIndex_t, typename Derived>
-class IndexForwardIter {
+class _IndexForwardIter {
 protected:
     TermIndex_t& r; // reference
 
@@ -87,7 +87,7 @@ protected:
     vector_u32 did_cache;
 
 public:
-    IndexForwardIter(TermIndex_t& _r);
+    _IndexForwardIter(TermIndex_t& _r);
     /* may have different return types */
     //Posting next();
     //Posting nextGEQ(uint32_t target_did);
@@ -100,17 +100,19 @@ public:
 
 protected:
     void load_cache();
-    void clear_cache();
+    void clear_cache(); // <Derived>
+    void clear_other_cursor(); // <Derived>
 
     /* load data other than doc_id */
-    void load_other_cache();
-    void skip_one_block();
+    void load_other_cache(); // <Derived>
+    void step_block(); // <Derived>
+    void step_cache(); // <Derived>
 };
 
 
 
 template<typename TermIndex_t, uint32_t BLOCK, typename Derived>
-class IndexBackInserter {
+class _IndexBackInserter {
 protected:
     TermIndex_t& r; // reference
 
@@ -119,7 +121,7 @@ protected:
 public:
     /* con/destructor of base class CANNOT use static polymorphism!!!
     should call construct() method in derived class constructor */
-    IndexBackInserter(TermIndex_t& _r) :r(_r) {}
+    _IndexBackInserter(TermIndex_t& _r) :r(_r) {}
     /* call destruct manually */
     void destruct();
 
@@ -127,28 +129,31 @@ public:
     if cache size is full, may unload cache, update term info etc.
     throw BufferfULL
     [params]
+    (N_DOCS) whether to increase ".n_docs" in lexicon for each append
+        used for index merging if it's true, because output index has to count total # of every input index
+        used for regular transferring if it's false
     (Arg) may have different types of input parameters */
-    template<typename Arg>
+    template<bool N_DOCS = false, typename Arg>
     void append(Arg p);
 
 protected:
     void construct();
     /* actual append implemented by derived class */
     template<typename Arg>
-    void _append(Arg p);
+    void _append(Arg p); // <Derived>
 
     /* throw BufferFull */
     void unload_cache();
-    void clear_cache();
+    void clear_cache(); // <Derived>
 
     /* unload data other than doc_id, then add a new block meta. */
-    void unload_other_cache(uint32_t lastdid, uint16_t didbsize);
+    void unload_other_cache(uint32_t lastdid, uint16_t didbsize); // <Derived>
     /* should be called inside derived class constructor
     try to load the last block in memory
     if the last block in memory is full, give up loading cache
     else, also resize to erase last block
     this may used for continue appending, until the block in cache is full again */
-    void try_load_last_cache(uint32_t pre_did);
+    void try_load_last_cache(uint32_t pre_did); // <Derived>
 };
 
 

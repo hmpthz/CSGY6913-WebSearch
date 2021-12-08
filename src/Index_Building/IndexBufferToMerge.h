@@ -3,7 +3,7 @@
 #include "../IndexBuffer.h"
 
 
-class InputBufferToMerge :public Transfer::InputBuffer<TermIndex_Freq<>, Lexicon_Freq, InputBufferToMerge> {
+class InputBufferToMerge :public InputBuffer::_Base<TermIndex_Freq<>, Lexicon_Freq, InputBufferToMerge> {
 public:
     inline void index_read_blocks(TermIndex_Freq<>& index) {
         index.try_read_blocks<false>(fin);
@@ -18,7 +18,7 @@ public:
 
 
 
-class OutputBufferToMerge :public Transfer::OutputBuffer<TermIndex_Freq<>, Lexicon_Freq, OutputBufferToMerge> {
+class OutputBufferToMerge :public OutputBuffer::_Base<TermIndex_Freq<>, Lexicon_Freq, OutputBufferToMerge> {
 public:
     inline void index_write(bool end, TermIndex_Freq<>& index) {
         index.write(end, write_did, fout);

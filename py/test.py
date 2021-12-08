@@ -37,7 +37,7 @@ def functime(func, n, *args, **kwargs):
 def f():
     MB = 2**20
     with open('D:\\Downloads\\fulldocs-new.trec', 'rb') as f:
-        content = f.read(int(20*MB))
+        content = f.read(int(100*MB))
 
     with open('test.xml', 'wb') as f:
         f.write(content)

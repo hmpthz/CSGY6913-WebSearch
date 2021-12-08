@@ -44,5 +44,5 @@ PY_API bool is_postingsbuf_empty(Builder* builder);
 merge currently opened input files, write to opened output file.
 guarantee that for each term, the prior IndexBuffer has lower doc_id, so merge can be simple.
 [params]
-(ignore) ignore terms that only 1 doc contains */
-PY_API void merge(Builder* builder, bool ignore);
+(min_docs) see "OutputBuffer.min_docs" */
+PY_API void merge(Builder* builder, uint32_t min_docs);

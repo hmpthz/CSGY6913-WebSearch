@@ -45,3 +45,6 @@ namespace Bits {
         void end_byte();
     };
 }
+
+
+#include "BitVector.ipp"
