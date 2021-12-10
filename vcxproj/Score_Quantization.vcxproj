@@ -14,6 +14,7 @@
     <ClCompile Include="..\src\Compression\VarBytes.cpp" />
     <ClCompile Include="..\src\DocTable.cpp" />
     <ClCompile Include="..\src\Experiment\PyInterface.cpp" />
+    <ClCompile Include="..\src\Experiment\test.cpp" />
     <ClCompile Include="..\src\Implementation\TermIndex_Freq.cpp" />
     <ClCompile Include="..\src\Implementation\TermIndex_Quantized.cpp" />
     <ClCompile Include="..\src\Implementation\TermIndex_Score.cpp" />
@@ -53,13 +54,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
