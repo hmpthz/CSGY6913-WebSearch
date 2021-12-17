@@ -5,7 +5,7 @@
 namespace InputBuffer {
     class Score :public _ScoreBase<TermIndex_Score<>, Score> {
     public:
-        inline TermIndex_Score<>::ForwardIter index_begin(TermIndex_Score<>& index) {
+        inline IndexForwardIter index_begin(TermIndex& index) {
             return index.begin();
         }
     };
@@ -15,7 +15,7 @@ namespace InputBuffer {
 namespace OutputBuffer {
     class Score :public _ScoreBase<TermIndex_Score<>, Score> {
     public:
-        inline TermIndex_Score<>::BackInserter index_back_inserter(TermIndex_Score<>& index) {
+        inline IndexBackInserter index_back_inserter(TermIndex& index) {
             return index.back_inserter();
         }
     };

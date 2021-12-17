@@ -1,5 +1,6 @@
 #pragma once
 #include "MemoryBuffer.h"
+#include <utility>
 
 
 template<typename Index_t, typename Lexicon_t>
@@ -56,12 +57,17 @@ namespace InputBuffer {
 
     public:
         using B = _IndexBufferBase<Index_t, Lexicon_t>;
-        inline Index_t& front() {
+        using TermIndex = typename Index_t;
+        using IndexForwardIter = typename Index_t::ForwardIter;
+        using Type = decltype(std::declval<IndexForwardIter>().next());
+        template<typename> friend class SequentialIter;
+
+        inline TermIndex& front() {
             return B::ilist.front();
         }
         /* pass correct arguments for TermIndex.try_read_blocks method */
-        void index_read_blocks(Index_t& index); // <Derived>
-        typename Index_t::ForwardIter index_begin(Index_t& index); // <Derived>
+        void index_read_blocks(TermIndex& index); // <Derived>
+        IndexForwardIter index_begin(TermIndex& index); // <Derived>
 
         void erase_front();
         /* read lexicon items and blocks of associated index, until buffer is full */
@@ -73,6 +79,23 @@ namespace InputBuffer {
         void close_fin() {
             if (fin.is_open()) fin.close();
         }
+        void reset_fpos(); // <Derived>
+    };
+
+
+    /* iterator to read all index in buffer instead of just one
+    constructor must be called after read_fill */
+    template<typename Buffer_t>
+    class SequentialIter {
+    protected:
+        Buffer_t& r;
+        typename Buffer_t::TermIndex* index_p;
+        typename Buffer_t::IndexForwardIter iter;
+
+    public:
+        SequentialIter(Buffer_t& _r) : r(_r), index_p(&_r.front()), iter(_r.index_begin(_r.front())) {}
+        bool has_next();
+        typename Buffer_t::Type next();
     };
 }
 
@@ -85,6 +108,8 @@ namespace OutputBuffer {
 
     public:
         using B = _IndexBufferBase<Index_t, Lexicon_t>;
+        using TermIndex = typename Index_t;
+        using IndexBackInserter = typename Index_t::BackInserter;
         /* whether var-bytes doc_id will be written
         in some case different types can share the same doc_id index file */
         bool write_did;
@@ -92,12 +117,12 @@ namespace OutputBuffer {
         many terms only occur in 1 or 2 documents, may filter them to reduce file size */
         uint32_t min_docs;
         _Base() :B(), write_did(true), min_docs(0) {}
-        inline Index_t& back() {
+        inline TermIndex& back() {
             return B::ilist.back();
         }
         /* pass correct arguments for TermIndex.write method */
-        void index_write(bool end, Index_t& index); // <Derived>
-        typename Index_t::BackInserter index_back_inserter(Index_t& index); // <Derived>
+        void index_write(bool end, TermIndex& index); // <Derived>
+        IndexBackInserter index_back_inserter(TermIndex& index); // <Derived>
 
         void append_empty_index(const std::string& term);
         /* write data of all index with terminator, and associated lexicon items

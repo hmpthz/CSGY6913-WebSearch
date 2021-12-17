@@ -7,11 +7,15 @@
 namespace InputBuffer {
     class Freq :public _Base<TermIndex_Freq<>, Lexicon_Freq, Freq> {
     public:
-        inline void index_read_blocks(TermIndex_Freq<>& index) {
+        inline void index_read_blocks(TermIndex& index) {
             index.try_read_blocks<false>(fin);
         }
-        inline TermIndex_Freq<>::ForwardIter index_begin(TermIndex_Freq<>& index) {
+        inline IndexForwardIter index_begin(TermIndex& index) {
             return index.begin();
+        }
+        void reset_fpos() {
+            lex.reset_fpos();
+            fin.seekg(std::ios::beg);
         }
     };
 
@@ -33,6 +37,11 @@ namespace InputBuffer {
         void close_fin() {
             B::close_fin();
             if (fin2.is_open()) fin2.close();
+        }
+        void reset_fpos() {
+            B::lex.reset_fpos();
+            B::fin.seekg(std::ios::beg);
+            fin2.seekg(std::ios::beg);
         }
     };
 }

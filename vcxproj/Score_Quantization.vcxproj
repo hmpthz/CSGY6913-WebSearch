@@ -21,8 +21,14 @@
     <ClCompile Include="..\src\MemoryBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\Compression\AdaptiveFloat.h" />
+    <ClInclude Include="..\src\Compression\AdaptiveFloat.ipp" />
     <ClInclude Include="..\src\Compression\BitVector.h" />
     <ClInclude Include="..\src\Compression\BitVector.ipp" />
+    <ClInclude Include="..\src\Compression\LinearQuantizer.h" />
+    <ClInclude Include="..\src\Compression\LinearQuantizer.ipp" />
+    <ClInclude Include="..\src\Compression\LogQuantizer.h" />
+    <ClInclude Include="..\src\Compression\LogQuantizer.ipp" />
     <ClInclude Include="..\src\Compression\VarBytes.h" />
     <ClInclude Include="..\src\DocTable.h" />
     <ClInclude Include="..\src\Experiment\PyInterface.h" />
@@ -30,8 +36,11 @@
     <ClInclude Include="..\src\global.h" />
     <ClInclude Include="..\src\Implementation\IndexBuffers_Score.h" />
     <ClInclude Include="..\src\Implementation\IndexBuffers_ScoreBase.h" />
+    <ClInclude Include="..\src\Implementation\TermIndex_Adapt.h" />
     <ClInclude Include="..\src\Implementation\TermIndex_Freq.h" />
     <ClInclude Include="..\src\Implementation\TermIndex_Freq.ipp" />
+    <ClInclude Include="..\src\Implementation\TermIndex_Linear.h" />
+    <ClInclude Include="..\src\Implementation\TermIndex_Log.h" />
     <ClInclude Include="..\src\Implementation\TermIndex_Quantized.h" />
     <ClInclude Include="..\src\Implementation\TermIndex_Quantized.ipp" />
     <ClInclude Include="..\src\Implementation\TermIndex_Score.h" />

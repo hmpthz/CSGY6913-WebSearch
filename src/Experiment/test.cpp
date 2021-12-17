@@ -27,6 +27,8 @@ void test_2_index() {
     //}
 
     bufscore.read_fill();
+    auto a = InputBuffer::SequentialIter(bufscore);
+    a.has_next();
     bufscore.erase_front();
     bufscore.erase_front();
     auto& index2 = bufscore.front();
@@ -61,5 +63,6 @@ void test_bits() {
 
 
 int main() {
-    test_bits();
+    test_2_index();
+    //test_bits();
 }

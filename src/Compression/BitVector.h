@@ -37,7 +37,7 @@ namespace Bits {
         int remain_bits_in_byte;
 
     public:
-        ForwardIter(Vec& a) :bytes(a) {}
+        ForwardIter(Vec& a) :bytes(a), ptr(NULL), b(0), remain_bits_in_byte(0) {}
         /* start from i_th byte */
         void set_byte(size_t i);
         /* get the next N bits, if remain_bits_in_byte are not enough, move to next byte */

@@ -44,7 +44,7 @@ inline void _TermIndex<B, L, D>::try_read_blocks(inFiles&&... infiles) {
 
 
 template<typename TermIndex_t, typename D>
-inline _IndexForwardIter<TermIndex_t, D>::_IndexForwardIter(TermIndex_t& _r) :r(_r) {
+inline _IndexForwardIter<TermIndex_t, D>::_IndexForwardIter(TermIndex_t& _r) :r(&_r) {
     cur_cache = 0;
     cur_block = 0;
     cur_byte = 0;
@@ -52,11 +52,11 @@ inline _IndexForwardIter<TermIndex_t, D>::_IndexForwardIter(TermIndex_t& _r) :r(
     did_cache.reserve(g::RESERVE);
     // this means current blocks in memory don't start from the first block in file
     // so need to clear and reload from the first block
-    if (r.start_did != 0) {
-        r.clear();
-        r.start_did = 0;
-        r.fpos = g::ival(r.info).start_off;
-        r.fblock = 0;
+    if (r->start_did != 0) {
+        r->clear();
+        r->start_did = 0;
+        r->fpos = g::ival(r->info).start_off;
+        r->fblock = 0;
     }
 }
 
@@ -65,12 +65,12 @@ inline void _IndexForwardIter<T, D>::load_cache() {
     // undifference doc_id
     uint32_t pre_did;
     if (cur_block > 0) {
-        pre_did = r.blocks_meta[cur_block - 1].last_did;
+        pre_did = r->blocks_meta[cur_block - 1].last_did;
     }
-    else pre_did = r.start_did;
+    else pre_did = r->start_did;
 
-    uint16_t didbsize = r.blocks_meta[cur_block].did_bsize;
-    r.bytes.decompress(cur_byte, didbsize, did_cache);
+    uint16_t didbsize = r->blocks_meta[cur_block].did_bsize;
+    r->bytes.decompress(cur_byte, didbsize, did_cache);
     VarBytes::undifference(pre_did, did_cache);
     // move cursor
     cur_byte += didbsize;
@@ -85,7 +85,7 @@ inline bool _IndexForwardIter<T, D>::has_next() {
     if (cur_cache >= did_cache.size()) {
         static_cast<D*>(this)->clear_cache();
         // blocks in memory is exhausted
-        if (cur_block >= r.block_size()) {
+        if (cur_block >= r->block_size()) {
             // set byte cursor to 0
             cur_block = 0;
             cur_byte = 0;
@@ -106,11 +106,11 @@ inline bool _IndexForwardIter<T, D>::has_nextGEQ(uint32_t target_did) {
     while (cur_cache >= did_cache.size() || did_cache.back() < target_did) {
         static_cast<D*>(this)->clear_cache();
         // search through blocks
-        while (cur_block < r.block_size() && r.blocks_meta[cur_block].last_did < target_did) {
+        while (cur_block < r->block_size() && r->blocks_meta[cur_block].last_did < target_did) {
             static_cast<D*>(this)->step_block();
         }
         // blocks in memory is exhausted
-        if (cur_block >= r.block_size()) {
+        if (cur_block >= r->block_size()) {
             // set byte cursor to 0
             cur_block = 0;
             cur_byte = 0;
@@ -138,13 +138,13 @@ template<typename T, uint32_t BLOCK, typename D>
 inline void _IndexBackInserter<T, BLOCK, D>::construct() {
     did_cache.reserve(g::RESERVE);
 
-    if (r.block_size() > 0) {
+    if (r->block_size() > 0) {
         uint32_t pre_did;
-        if (r.block_size() > 1) {
-            auto& second_last_block = r.blocks_meta[r.block_size() - 2];
+        if (r->block_size() > 1) {
+            auto& second_last_block = r->blocks_meta[r->block_size() - 2];
             pre_did = second_last_block.last_did;
         }
-        else pre_did = r.start_did;
+        else pre_did = r->start_did;
 
         static_cast<D*>(this)->try_load_last_cache(pre_did);
     }
@@ -163,7 +163,7 @@ inline void _IndexBackInserter<T, BLOCK, D>::append(Arg p) {
     static_cast<D*>(this)->_append(p);
     if constexpr (N_DOCS) {
         // update term info
-        g::ival(r.info).n_docs++;
+        g::ival(r->info).n_docs++;
     }
     // check if cache is full
     if (did_cache.size() >= BLOCK) {
@@ -175,22 +175,22 @@ template<typename T, uint32_t BLOCK, typename D>
 inline void _IndexBackInserter<T, BLOCK, D>::unload_cache() {
     // difference doc_id
     uint32_t pre_did;
-    if (r.block_size() > 0) {
-        pre_did = r.blocks_meta.back().last_did;
+    if (r->block_size() > 0) {
+        pre_did = r->blocks_meta.back().last_did;
     }
-    else pre_did = r.start_did;
+    else pre_did = r->start_did;
 
     uint32_t lastdid = did_cache.back();
     VarBytes::difference(pre_did, did_cache);
-    uint16_t didbsize = r.bytes.compress(did_cache);
+    uint16_t didbsize = r->bytes.compress(did_cache);
 
     static_cast<D*>(this)->unload_other_cache(lastdid, didbsize);
     // update term info
-    r.fblock++;
+    r->fblock++;
 
     static_cast<D*>(this)->clear_cache();
 
-    auto memcnt = static_cast<MemoryCounter*>(r.bytes.get_allocator().resource());
+    auto memcnt = static_cast<MemoryCounter*>(r->bytes.get_allocator().resource());
     if (memcnt->is_full()) {
         throw g::Exception::BufferFull;
     }

@@ -84,6 +84,39 @@ void Transfer::all_data(SrcBuf_t& srcbuf, DstBuf_t& dstbuf) {
 }
 
 
+template<typename Buffer_t>
+inline bool InputBuffer::SequentialIter<Buffer_t>::has_next() {
+    while (true) {
+        if (iter.has_next()) {
+            return true;
+        }
+        // this index is exhausted, move to next index
+        else if (index_p->is_endfile()) {
+            r.erase_front();
+            if (r.is_empty()) {
+                r.read_fill();
+                // still empty, input buffer has been exhausted
+                if (r.is_empty()) {
+                    return false;
+                }
+            }
+
+            index_p = &r.front();
+            iter = r.index_begin(*index_p);
+        }
+        // need to read more blocks
+        else {
+            r.index_read_blocks(*index_p);
+        }
+    }
+}
+
+template<typename Buffer_t>
+inline typename Buffer_t::Type InputBuffer::SequentialIter<Buffer_t>::next() {
+    return iter.next();
+}
+
+
 template<typename I, typename L, typename D>
 inline void InputBuffer::_Base<I, L, D>::erase_front() {
     B::lex.erase(B::ilist.front().info);

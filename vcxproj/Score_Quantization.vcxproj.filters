@@ -111,5 +111,32 @@
     <ClInclude Include="..\src\Experiment\tasks.ipp">
       <Filter>Source\Experiment</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Adapt.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Linear.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Implementation\TermIndex_Log.h">
+      <Filter>Source\Implementation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\AdaptiveFloat.h">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\LinearQuantizer.h">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\LogQuantizer.h">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\AdaptiveFloat.ipp">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\LinearQuantizer.ipp">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\Compression\LogQuantizer.ipp">
+      <Filter>Source\Compression</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

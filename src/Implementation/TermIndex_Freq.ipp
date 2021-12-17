@@ -24,17 +24,17 @@ inline void IndexForwardIter_Freq::clear_cache() {
 
 inline void IndexForwardIter_Freq::load_other_cache() {
     uint16_t freqbsize = r
-        .blocks_meta[cur_block].freq_bsize;
-    r.bytes.decompress(cur_byte, freqbsize, freq_cache);
+        ->blocks_meta[cur_block].freq_bsize;
+    r->bytes.decompress(cur_byte, freqbsize, freq_cache);
     // move cursor
     cur_byte += freqbsize;
 }
 
 inline void IndexForwardIter_Freq::step_block() {
     cur_byte += r
-        .blocks_meta[cur_block].did_bsize;
+        ->blocks_meta[cur_block].did_bsize;
     cur_byte += r
-        .blocks_meta[cur_block].freq_bsize;
+        ->blocks_meta[cur_block].freq_bsize;
     cur_block++;
 }
 
@@ -53,16 +53,16 @@ inline void IndexBackInserter_Freq<BLOCK>::clear_cache() {
 
 template<uint32_t BLOCK>
 inline void IndexBackInserter_Freq<BLOCK>::unload_other_cache(uint32_t lastdid, uint16_t didbsize) {
-    uint16_t freqbsize = B::r.bytes.compress(freq_cache);
-    B::r.blocks_meta.emplace_back(lastdid, didbsize, freqbsize);
+    uint16_t freqbsize = B::r->bytes.compress(freq_cache);
+    B::r->blocks_meta.emplace_back(lastdid, didbsize, freqbsize);
 }
 
 template<uint32_t BLOCK>
 inline void IndexBackInserter_Freq<BLOCK>::try_load_last_cache(uint32_t pre_did) {
-    auto& last_block = B::r.blocks_meta.back();
-    size_t cur_byte_freq = B::r.bytes.size() - last_block.freq_bsize;
+    auto& last_block = B::r->blocks_meta.back();
+    size_t cur_byte_freq = B::r->bytes.size() - last_block.freq_bsize;
     size_t cur_byte_did = cur_byte_freq - last_block.did_bsize;
-    B::r.bytes.decompress(cur_byte_did, last_block.did_bsize, B::did_cache);
+    B::r->bytes.decompress(cur_byte_did, last_block.did_bsize, B::did_cache);
 
     if (B::did_cache.size() >= BLOCK) {
         // last block is full, give up
@@ -71,11 +71,11 @@ inline void IndexBackInserter_Freq<BLOCK>::try_load_last_cache(uint32_t pre_did)
     }
 
     VarBytes::undifference(pre_did, B::did_cache);
-    B::r.bytes.decompress(cur_byte_freq, last_block.freq_bsize, freq_cache);
+    B::r->bytes.decompress(cur_byte_freq, last_block.freq_bsize, freq_cache);
 
     // erase last block
-    B::r.bytes.resize(cur_byte_did);
-    B::r.blocks_meta.resize(B::r.block_size() - 1);
+    B::r->bytes.resize(cur_byte_did);
+    B::r->blocks_meta.resize(B::r->block_size() - 1);
     // fblock decrease one
-    B::r.fblock--;
+    B::r->fblock--;
 }

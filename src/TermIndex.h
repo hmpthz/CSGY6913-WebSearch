@@ -79,7 +79,7 @@ public:
 template<typename TermIndex_t, typename Derived>
 class _IndexForwardIter {
 protected:
-    TermIndex_t& r; // reference
+    TermIndex_t* r; // reference
 
     uint32_t cur_cache;
     uint32_t cur_block;
@@ -114,14 +114,14 @@ protected:
 template<typename TermIndex_t, uint32_t BLOCK, typename Derived>
 class _IndexBackInserter {
 protected:
-    TermIndex_t& r; // reference
+    TermIndex_t* r; // reference
 
     vector_u32 did_cache;
 
 public:
     /* con/destructor of base class CANNOT use static polymorphism!!!
     should call construct() method in derived class constructor */
-    _IndexBackInserter(TermIndex_t& _r) :r(_r) {}
+    _IndexBackInserter(TermIndex_t& _r) :r(&_r) {}
     /* call destruct manually */
     void destruct();
 

@@ -1,9 +1,25 @@
 #pragma once
 #include "TermIndex_ScoreBase.h"
+#include "../Compression/BitVector.h"
 
 
-class _TermIndex_Quantized :public _TermIndex_ScoreBase< _TermIndex_Quantized> {
+class _TermIndex_Quantized :public _TermIndex_ScoreBase<_TermIndex_Quantized> {
+protected:
+    Bits::Vec bits;
 
+public:
+    using Base = _TermIndex_ScoreBase<_TermIndex_Quantized>;
+    friend Base::B;
+    _TermIndex_Quantized(MemoryCounter& memcnt, Lexicon_Score::Iter& iter);
+
+    /*
+        binary format:
+        a block: <4-last_did> <2-did_size> <2-score_bsize> <did_size-VarBytes> <quantized_scores-bytes(BitVector)>
+        terminator: <1-0>
+    */
+    void read_next_block(std::ifstream& fin, std::ifstream& fin2);
+    void write(bool end, bool write_did, std::ofstream& fout, std::ofstream& fout2);
+    void clear();
 };
 
 

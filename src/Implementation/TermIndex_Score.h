@@ -17,7 +17,7 @@ public:
 
     /*
         binary format:
-        a block: <4-last_did> <2-did_size> <2-freq_size> <did_size-VarBytes> <freq_size-VarBytes>
+        a block: <4-last_did> <2-did_size> <2-score_bsize> <did_size-VarBytes> <scores-floats>
         terminator: <1-0>
     */
     void read_next_block(std::ifstream& fin, std::ifstream& fin2);

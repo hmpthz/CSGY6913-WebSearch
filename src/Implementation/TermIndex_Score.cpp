@@ -4,13 +4,6 @@
 DocTable* BM25::docs = NULL;
 
 
-void _TermIndex_Score::clear() {
-    bytes.clear();
-    blocks_meta.clear();
-    scores.clear();
-}
-
-
 Lexicon_Score::Iter Lexicon_Score::read_next() {
     std::istreambuf_iterator<char> ifiter(fin);
     std::istreambuf_iterator<char> ifiter_end;
@@ -127,4 +120,10 @@ void _TermIndex_Score::write(bool end, bool write_did, std::ofstream& fout, std:
             ofiter2 = '\0';
         }
     }
+}
+
+void _TermIndex_Score::clear() {
+    bytes.clear();
+    blocks_meta.clear();
+    scores.clear();
 }
