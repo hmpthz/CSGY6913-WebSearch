@@ -125,8 +125,6 @@ inline void InputBuffer::_Base<I, L, D>::erase_front() {
 
 template<typename I, typename L, typename D>
 inline void InputBuffer::_Base<I, L, D>::read_fill() {
-    std::cout << "InputBuffer::read_fill\n";
-
     try {
         while (!B::is_full()) {
             auto lex_iter = B::lex.read_next();
@@ -139,7 +137,7 @@ inline void InputBuffer::_Base<I, L, D>::read_fill() {
     // Lexicon EndInFile Exception
     catch (g::Exception) {}
 
-    std::cout << "InputBuffer::read_fill END\n";
+    std::cout << "InputBuffer::read_fill " << B::ilist.size() << " terms\n";
 }
 
 
@@ -153,8 +151,6 @@ inline void OutputBuffer::_Base<I, Lexicon_t, D>::append_empty_index(const std::
 
 template<typename I, typename L, typename D>
 inline void OutputBuffer::_Base<I, L, D>::write_except_back() {
-    std::cout << "OutputBuffer::write_except_back\n";
-
     // write except last one
     if (B::ilist.size() > 1) {
         auto backiter = std::prev(B::ilist.end());
@@ -174,13 +170,11 @@ inline void OutputBuffer::_Base<I, L, D>::write_except_back() {
     //    static_cast<D*>(this)->index_write(false, B::ilist.back());
     //}
 
-    std::cout << "OutputBuffer::write_except_back END\n";
+    std::cout << "OutputBuffer::write_except_back " << B::ilist.size() - 1 << " terms\n";
 }
 
 template<typename I, typename L, typename D>
 inline void OutputBuffer::_Base<I, L, D>::write_all() {
-    std::cout << "OutputBuffer::write_all\n";
-
     for (auto iter = B::ilist.begin(); iter != B::ilist.end(); iter++) {
         // ignore terms that too few docs contain 
         if (g::ival(iter->info).n_docs >= min_docs) {
@@ -191,7 +185,7 @@ inline void OutputBuffer::_Base<I, L, D>::write_all() {
         }
     }
 
-    std::cout << "OutputBuffer::write_all END\n";
+    std::cout << "OutputBuffer::write_all " << B::ilist.size() << " terms\n";
 }
 
 template<typename I, typename L, typename D>

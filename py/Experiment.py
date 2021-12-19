@@ -56,7 +56,10 @@ def task_quantize():
 
 
 def task_speed_test():
-    pass
+    if arg.type == 'origin':
+        filename_doctbale = pjoin(arg.d, 'doctable.bin')
+        cdll.load_doctable(filename_doctbale.encode('ascii'))
+    
 
 
 def task_MSE():

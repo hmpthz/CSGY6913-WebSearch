@@ -1,5 +1,6 @@
 #pragma once
-#include "../Implementation/IndexBuffers_Score.h"
+#include "../Implementation/IndexBuffer_Specialized.h"
+#include "tasks.ipp"
 //#include <mimalloc-new-delete.h>
 
 #include <Python.h>

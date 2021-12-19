@@ -79,7 +79,11 @@ namespace InputBuffer {
         void close_fin() {
             if (fin.is_open()) fin.close();
         }
-        void reset_fpos(); // <Derived>
+        void reset_fpos() {
+            B::lex.reset_fpos();
+            fin.clear();
+            fin.seekg(std::ios::beg);
+        }
     };
 
 
@@ -96,6 +100,7 @@ namespace InputBuffer {
         SequentialIter(Buffer_t& _r) : r(_r), index_p(&_r.front()), iter(_r.index_begin(_r.front())) {}
         bool has_next();
         typename Buffer_t::Type next();
+        typename Buffer_t::TermIndex& current_index() { return *index_p; }
     };
 }
 

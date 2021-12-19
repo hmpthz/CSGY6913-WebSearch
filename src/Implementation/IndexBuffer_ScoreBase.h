@@ -1,25 +1,10 @@
 #pragma once
-#include "TermIndex_Freq.h"
-#include "TermIndex_Score.h"
 #include "../IndexBuffer.h"
+#include "TermIndex_ScoreBase.h"
 
 
 namespace InputBuffer {
-    class Freq :public _Base<TermIndex_Freq<>, Lexicon_Freq, Freq> {
-    public:
-        inline void index_read_blocks(TermIndex& index) {
-            index.try_read_blocks<false>(fin);
-        }
-        inline IndexForwardIter index_begin(TermIndex& index) {
-            return index.begin();
-        }
-        void reset_fpos() {
-            lex.reset_fpos();
-            fin.seekg(std::ios::beg);
-        }
-    };
-
-
+    /* data are stored in two different files */
     template<typename Index_t, typename Derived>
     class _ScoreBase :public _Base<Index_t, Lexicon_Score, Derived> {
         using B = _Base<Index_t, Lexicon_Score, Derived>;
@@ -40,7 +25,9 @@ namespace InputBuffer {
         }
         void reset_fpos() {
             B::lex.reset_fpos();
+            B::fin.clear();
             B::fin.seekg(std::ios::beg);
+            fin2.clear();
             fin2.seekg(std::ios::beg);
         }
     };
@@ -48,6 +35,7 @@ namespace InputBuffer {
 
 
 namespace OutputBuffer {
+    /* data are stored in two different files */
     template<typename Index_t, typename Derived>
     class _ScoreBase :public _Base<Index_t, Lexicon_Score, Derived> {
         using B = _Base<Index_t, Lexicon_Score, Derived>;

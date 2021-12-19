@@ -64,7 +64,7 @@ protected:
     void _append(PostScore p);
     void clear_cache();
     void try_load_last_cache(uint32_t pre_did) {
-        throw std::exception();
+        throw g::Exception::Unreachable;
     }
 };
 

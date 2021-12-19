@@ -55,6 +55,7 @@ public:
         if (fout.is_open()) fout.close();
     }
     void reset_fpos() {
+        fin.clear();
         fin.seekg(std::ios::beg);
     }
 };

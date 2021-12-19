@@ -99,13 +99,13 @@
     <ClInclude Include="..\src\Implementation\TermIndex_Quantized.ipp">
       <Filter>Source\Implementation</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Implementation\IndexBuffers_ScoreBase.h">
+    <ClInclude Include="..\src\Implementation\IndexBuffer_ScoreBase.h">
       <Filter>Source\Implementation</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Experiment\PyInterface.h">
       <Filter>Source\Experiment</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\Implementation\IndexBuffers_Score.h">
+    <ClInclude Include="..\src\Implementation\IndexBuffer_Specialized.h">
       <Filter>Source\Implementation</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Experiment\tasks.ipp">
@@ -130,12 +130,6 @@
       <Filter>Source\Compression</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Compression\AdaptiveFloat.ipp">
-      <Filter>Source\Compression</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Compression\LinearQuantizer.ipp">
-      <Filter>Source\Compression</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Compression\LogQuantizer.ipp">
       <Filter>Source\Compression</Filter>
     </ClInclude>
   </ItemGroup>

@@ -25,7 +25,7 @@ namespace Bits {
 
 
     /* start from a byte, sequentially read N bits at a time */
-    template<uint32_t N>
+    template<uint32_t BITS>
     class ForwardIter {
     protected:
         Vec& bytes;
@@ -45,7 +45,7 @@ namespace Bits {
     };
 
 
-    template<uint32_t N>
+    template<uint32_t BITS>
     class BackInserter {
     protected:
         Vec& bytes;

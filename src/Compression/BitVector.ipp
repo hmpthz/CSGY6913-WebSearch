@@ -1,15 +1,15 @@
 
 
-template<uint32_t N>
-inline void Bits::ForwardIter<N>::set_byte(size_t i) {
+template<uint32_t BITS>
+inline void Bits::ForwardIter<BITS>::set_byte(size_t i) {
     ptr = &bytes[i];
     b = *ptr;
     remain_bits_in_byte = 8;
 }
 
-template<uint32_t N>
-inline uint32_t Bits::ForwardIter<N>::next() {
-    int remain_bits_in_N = (int)N;
+template<uint32_t BITS>
+inline uint32_t Bits::ForwardIter<BITS>::next() {
+    int remain_bits_in_N = (int)BITS;
     int read_bits_in_N = 0; // # of bits that have been read
     uint32_t x = 0; // result bits to be returned
 
@@ -46,9 +46,9 @@ inline uint32_t Bits::ForwardIter<N>::next() {
 }
 
 
-template<uint32_t N>
-inline void Bits::BackInserter<N>::append(uint32_t x) {
-    int remain_bits_in_N = (int)N;
+template<uint32_t BITS>
+inline void Bits::BackInserter<BITS>::append(uint32_t x) {
+    int remain_bits_in_N = (int)BITS;
 
     while (true) {
         if (remain_bits_in_byte <= 0) {
@@ -79,7 +79,7 @@ inline void Bits::BackInserter<N>::append(uint32_t x) {
     }
 }
 
-template<uint32_t N>
-inline void Bits::BackInserter<N>::end_byte() {
+template<uint32_t BITS>
+inline void Bits::BackInserter<BITS>::end_byte() {
     remain_bits_in_byte = 0;
 }

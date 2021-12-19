@@ -42,9 +42,10 @@ namespace g {
 
     /* All exceptions used for projects */
     enum class Exception {
+        Unreachable,
         EndInFile,
         TermNotFound,
-        BufferFull
+        BufferFull,
     };
 
     /* used for reading string in binary file, copy characters until '\0' */

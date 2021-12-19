@@ -81,7 +81,7 @@ protected:
     /* this feature is only used for index merging
     shouldn't be called in this class */
     void try_load_last_cache(uint32_t pre_did) {
-        throw std::exception();
+        throw g::Exception::Unreachable;
     }
 };
 
