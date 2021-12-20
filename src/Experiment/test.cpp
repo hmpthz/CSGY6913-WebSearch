@@ -9,7 +9,6 @@ void test_2_index() {
     auto& buffreq = *get_inputbuf_Origin(300, "D:\\Downloads\\WSE_index\\lexicon.bin", "D:\\Downloads\\WSE_index\\index.bin");
     auto& bufscore = *get_inputbuf_UncompressedScore(300, "D:\\Downloads\\WSE_index\\s_lex.bin", "D:\\Downloads\\WSE_index\\s_index.bin", "D:\\Downloads\\WSE_index\\score.bin");
 
-    get_sample_scores(bufscore);
 }
 
 void test_bits() {
@@ -28,6 +27,7 @@ void test_bits() {
 
 
 int main() {
-    test_2_index();
+    //test_2_index();
     //test_bits();
+    return 0;
 }

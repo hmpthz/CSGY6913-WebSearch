@@ -37,23 +37,25 @@ struct BlockMeta_Score {
     BlockMeta_Score() :last_did(0), did_bsize(0), score_bsize(0) {} // WHY PMR needs this default constructor ????
 };
 
-template<typename Derived>
-class _TermIndex_ScoreBase :public _TermIndex<BlockMeta_Score, Lexicon_Score::Iter, Derived> {
-protected:
-    /* current offset in the second file which has scores and block meta */
-    uint64_t fpos2;
+namespace _Index {
+    template<typename Derived>
+    class _ScoreBase :public _Base<BlockMeta_Score, Lexicon_Score::Iter, Derived> {
+    protected:
+        /* current offset in the second file which has scores and block meta */
+        uint64_t fpos2;
 
-public:
-    using B = _TermIndex<BlockMeta_Score, Lexicon_Score::Iter, Derived>;
-    _TermIndex_ScoreBase(MemoryCounter& memcnt, Lexicon_Score::Iter& iter) :
-        B(memcnt, iter) {
-        fpos2 = g::ival(B::info).start_off2;
-    }
+    public:
+        using B = _Base<BlockMeta_Score, Lexicon_Score::Iter, Derived>;
+        _ScoreBase(MemoryCounter& memcnt, Lexicon_Score::Iter& iter) :
+            B(memcnt, iter) {
+            fpos2 = g::ival(B::info).start_off2;
+        }
 
-    inline void seek_fpos(std::ifstream& fin, std::ifstream& fin2) {
-        fin.seekg(B::fpos); fin2.seekg(fpos2);
-    }
-    inline void set_fpos(std::ifstream& fin, std::ifstream& fin2) {
-        B::fpos = fin.tellg(); fpos2 = fin2.tellg();
-    }
-};
+        inline void seek_fpos(std::ifstream& fin, std::ifstream& fin2) {
+            fin.seekg(B::fpos); fin2.seekg(fpos2);
+        }
+        inline void set_fpos(std::ifstream& fin, std::ifstream& fin2) {
+            B::fpos = fin.tellg(); fpos2 = fin2.tellg();
+        }
+    };
+}

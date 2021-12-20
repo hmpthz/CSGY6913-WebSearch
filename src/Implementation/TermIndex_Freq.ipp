@@ -1,6 +1,6 @@
 
 
-inline Posting IndexForwardIter_Freq::next() {
+inline Posting _Index::FreqForwardIter::next() {
     auto p = Posting(
         did_cache[cur_cache],
         freq_cache[cur_cache]);
@@ -8,7 +8,7 @@ inline Posting IndexForwardIter_Freq::next() {
     return p;
 }
 
-inline Posting IndexForwardIter_Freq::nextGEQ(uint32_t target_did) {
+inline Posting _Index::FreqForwardIter::nextGEQ(uint32_t target_did) {
     auto p = Posting(
         did_cache[cur_cache],
         freq_cache[cur_cache]);
@@ -16,13 +16,13 @@ inline Posting IndexForwardIter_Freq::nextGEQ(uint32_t target_did) {
     return p;
 }
 
-inline void IndexForwardIter_Freq::clear_cache() {
+inline void _Index::FreqForwardIter::clear_cache() {
     cur_cache = 0;
     did_cache.clear();
     freq_cache.clear();
 }
 
-inline void IndexForwardIter_Freq::load_other_cache() {
+inline void _Index::FreqForwardIter::load_other_cache() {
     uint16_t freqbsize = r
         ->blocks_meta[cur_block].freq_bsize;
     r->bytes.decompress(cur_byte, freqbsize, freq_cache);
@@ -30,7 +30,7 @@ inline void IndexForwardIter_Freq::load_other_cache() {
     cur_byte += freqbsize;
 }
 
-inline void IndexForwardIter_Freq::step_block() {
+inline void _Index::FreqForwardIter::step_block() {
     cur_byte += r
         ->blocks_meta[cur_block].did_bsize;
     cur_byte += r
@@ -40,25 +40,25 @@ inline void IndexForwardIter_Freq::step_block() {
 
 
 template<uint32_t BLOCK>
-inline void IndexBackInserter_Freq<BLOCK>::_append(Posting p) {
+inline void _Index::FreqBackInserter<BLOCK>::_append(Posting p) {
     B::did_cache.emplace_back(p.doc_id);
     freq_cache.emplace_back(p.frequency);
 }
 
 template<uint32_t BLOCK>
-inline void IndexBackInserter_Freq<BLOCK>::clear_cache() {
+inline void _Index::FreqBackInserter<BLOCK>::clear_cache() {
     B::did_cache.clear();
     freq_cache.clear();
 }
 
 template<uint32_t BLOCK>
-inline void IndexBackInserter_Freq<BLOCK>::unload_other_cache(uint32_t lastdid, uint16_t didbsize) {
+inline void _Index::FreqBackInserter<BLOCK>::unload_other_cache(uint32_t lastdid, uint16_t didbsize) {
     uint16_t freqbsize = B::r->bytes.compress(freq_cache);
     B::r->blocks_meta.emplace_back(lastdid, didbsize, freqbsize);
 }
 
 template<uint32_t BLOCK>
-inline void IndexBackInserter_Freq<BLOCK>::try_load_last_cache(uint32_t pre_did) {
+inline void _Index::FreqBackInserter<BLOCK>::try_load_last_cache(uint32_t pre_did) {
     auto& last_block = B::r->blocks_meta.back();
     size_t cur_byte_freq = B::r->bytes.size() - last_block.freq_bsize;
     size_t cur_byte_did = cur_byte_freq - last_block.did_bsize;

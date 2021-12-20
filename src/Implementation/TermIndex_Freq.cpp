@@ -1,7 +1,7 @@
 #include "TermIndex_Freq.h"
 
 
-void _TermIndex_Freq::clear() {
+void _Index::Freq::clear() {
     bytes.clear();
     blocks_meta.clear();
 }
@@ -39,7 +39,7 @@ void Lexicon_Freq::write(Iter iter) {
 }
 
 
-void _TermIndex_Freq::read_next_block(std::ifstream& fin) {
+void _Index::Freq::read_next_block(std::ifstream& fin) {
     std::istreambuf_iterator<char> ifiter(fin);
 
     uint32_t lastdid;
@@ -56,7 +56,7 @@ void _TermIndex_Freq::read_next_block(std::ifstream& fin) {
     blocks_meta.emplace_back(lastdid, didbsize, freqbsize);
 }
 
-void _TermIndex_Freq::write(bool end, bool write_did, std::ofstream& fout) {
+void _Index::Freq::write(bool end, bool write_did, std::ofstream& fout) {
     // set start offset
     if (g::ival(info).start_off == -1) {
         g::ival(info).start_off = fout.tellp();
@@ -108,7 +108,7 @@ void Lexicon_Freq::write(Iter iter) {
 }
 
 
-void _TermIndex_Freq::read_next_block(std::ifstream& fin) {
+void _Index::Freq::read_next_block(std::ifstream& fin) {
     // in debug text format, we read uncompressed ascii numbers from file
     // so they need to be differenced and compress again into memory
     // use extra static cache, don't mess with member's cache
@@ -147,7 +147,7 @@ void _TermIndex_Freq::read_next_block(std::ifstream& fin) {
     blocks_meta.emplace_back(lastdid, didbsize, freqbsize);
 }
 
-void _TermIndex_Freq::write(bool end, bool write_did, std::ofstream& fout) {
+void _Index::Freq::write(bool end, bool write_did, std::ofstream& fout) {
     // in debug text format, we write uncompressed ascii numbers to file
     // so they need to be decompress and undifference again into file
     // use extra static cache, don't mess with member's cache

@@ -3,7 +3,7 @@
 import numpy as np
 np.set_printoptions(suppress=True)
 
-def quantize_adaptivfloat(float_arr, n_bits=8, n_exp=4, bias = None):
+def adaptivfloat_origin(float_arr, n_bits=8, n_exp=4, bias = None):
     n_mant = n_bits-1-n_exp
 
     # 1. store sign value and do the following part as unsigned value
@@ -18,11 +18,11 @@ def quantize_adaptivfloat(float_arr, n_bits=8, n_exp=4, bias = None):
     # 2. limits the range of output float point
     min_exp = 0+bias
     max_exp = 2**(n_exp)-1+bias
-    print(bias_temp, min_exp)
 
     ## min and max values of adaptivfloat
     min_value = 2.0**min_exp*(1+2.0**(-n_mant))
     max_value = (2.0**max_exp)*(2.0-2.0**(-n_mant))
+    # print(min_exp, bias_temp, max_exp, min_value, max_value)
 
     #print(min_value, max_value)
     ## 2.1. reduce too small values to zero
@@ -35,22 +35,80 @@ def quantize_adaptivfloat(float_arr, n_bits=8, n_exp=4, bias = None):
 
     # 3. get mant, exp (the format is different from IEEE float)
     mant, exp = np.frexp(float_arr)
-    print(mant, exp)
+    # print(mant, exp)
 
     # 3.1 change mant, and exp format to IEEE float format
     # no effect for exponent of 0 outputs
-    mant = mant
-    exp = exp
+    mant = 2*mant
+    exp = exp-1
     power_exp = np.exp2(exp)
     ## 4. quantize mantissa
     scale = 2**(-n_mant) ## e.g. 2 bit, scale = 0.25
-    mant = ((mant/scale).round())*scale
-    print((mant/scale).round())
+    q_mant = (mant/scale).round()
+    q_mant[q_mant > 0] = q_mant[q_mant > 0] - 2**n_mant
+    mant = q_mant.copy()
+    mant[mant > 0] = mant[mant > 0] + 2**n_mant
+    mant = mant*scale
+    print(q_mant)
 
     float_out = sign*power_exp*mant
         
     float_out = float_out.astype("float32")
+    print(float_out)
     return float_out
 
 
-quantize_adaptivfloat(np.array([-0.0015, -0.24, 18.1, 0]))
+def quantize_mant(abs_mant, n_mant):
+    return None
+
+def dequantize_mant(q_mant, n_mant):
+    return None
+
+
+def adaptivfloat(arr, n_bits=8, n_exp=4):
+    n_mant = n_bits-1-n_exp
+
+    # 1. store sign value and do the following part as unsigned value
+    sign = np.sign(arr)
+    arr = np.abs(arr)
+
+    # 1.5  if bias not determined, auto set exponent bias by the maximum input 
+    exp_max = np.frexp(arr.max())[1]-1
+    exp_bias = exp_max - (2**n_exp - 1)
+
+    ## min and max values of adaptivfloat
+    value_min = 2.0**exp_bias*(1+2.0**(-n_mant))
+    value_max = (2.0**exp_max)*(2.0-2.0**(-n_mant))
+
+    ## 2.1. reduce too small values to zero
+    arr[arr < 0.5*value_min] = 0
+    arr[(arr > 0.5*value_min) & (arr < value_min)] = value_min
+
+    ## 2.2. reduce too large values to max value of output format
+    arr[arr > value_max] = value_max
+
+    # 3. get mant, exp (the format is different from IEEE float)
+    mant, exp = np.frexp(arr)
+    q_mant = quantize_mant(mant, n_mant)
+    mant = dequantize_mant(q_mant, n_mant)
+    print(sign * mant * 2.0**exp)
+
+
+def test_round_strategy(arr, n):
+    # strategy 1
+    arr1 = arr.copy()
+    arr1 = np.round(arr1 * (2**n-0.501))
+    arr1 = arr1 / (2**n-0.501)
+    # strategy 2
+    arr2 = arr.copy()
+    arr2 = np.round(arr2 * (2**n-1))
+    arr2 = arr2 / (2**n-1)
+    # for x1, x2, x3 in zip(arr, arr1, arr2):
+    #     print(x1, x2, x3)
+    mse1 = np.square(arr-arr1).mean()
+    mse2 = np.square(arr-arr2).mean()
+    print(mse1, mse2)
+
+# adaptivfloat_origin(np.array([-0.0015, -0.74, 12, 0]))
+# adaptivfloat(np.array([-0.0015, -0.74, 12, 0]))
+test_round_strategy(np.random.rand(100), 3)

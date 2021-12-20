@@ -69,4 +69,10 @@ namespace g {
     /* value getter of an pair iterator */
     template<typename _It, typename _Val = typename std::iterator_traits<_It>::value_type::second_type>
     inline _Val& ival(_It it) { return it->second; }
+
+    inline int8_t sgn(float x) {
+        if (x > 0) return 1;
+        else if (x < 0)return -1;
+        return 0;
+    }
 }

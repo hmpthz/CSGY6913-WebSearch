@@ -35,98 +35,102 @@ struct BlockMeta_Freq {
     BlockMeta_Freq() :last_did(0), did_bsize(0), freq_bsize(0) {} // WHY PMR needs this default constructor ????
 };
 
-class _TermIndex_Freq :public _TermIndex<BlockMeta_Freq, Lexicon_Freq::Iter, _TermIndex_Freq> {
-    using _TermIndex::_TermIndex; // C++11, inherit all constructors;
-public:
-    using Base = _TermIndex<BlockMeta_Freq, Lexicon_Freq::Iter, _TermIndex_Freq>;
-    friend Base; // IMPORTANT!! make sure base class can access protected derived class members
-    friend class IndexForwardIter_Freq;
-    template<uint32_t> friend class IndexBackInserter_Freq;
+namespace _Index {
+    class Freq :public _Base<BlockMeta_Freq, Lexicon_Freq::Iter, Freq> {
+        using _Base::_Base; // C++11, inherit all constructors;
+    public:
+        using Base = _Base<BlockMeta_Freq, Lexicon_Freq::Iter, Freq>;
+        friend Base; // IMPORTANT!! make sure base class can access protected derived class members
+        friend class FreqForwardIter;
+        template<uint32_t> friend class FreqBackInserter;
 
-    /*
-        text format: uncompressed ascii numbers
-        a block: <last_did> (space) <# of postings in this block> (space) [<doc_id> (space) ....] [<frequency> (space) ....] (\n)
-        terminator: <'#'> (\n)
-        binary format:
-        a block: <4-last_did> <2-did_size> <2-freq_size> <did_size-VarBytes> <freq_size-VarBytes>
-        terminator: <1-0>
-    */
+        /*
+            text format: uncompressed ascii numbers
+            a block: <last_did> (space) <# of postings in this block> (space) [<doc_id> (space) ....] [<frequency> (space) ....] (\n)
+            terminator: <'#'> (\n)
+            binary format:
+            a block: <4-last_did> <2-did_size> <2-freq_size> <did_size-VarBytes> <freq_size-VarBytes>
+            terminator: <1-0>
+        */
 
-    void read_next_block(std::ifstream& fin);
-    void write(bool end, bool write_did, std::ofstream& fout);
-    void clear();
-    inline void seek_fpos(std::ifstream& fin) {
-        fin.seekg(fpos);
-    }
-    inline void set_fpos(std::ifstream& fin) {
-        fpos = fin.tellg();
-    }
-};
-
-
-
-class IndexForwardIter_Freq :public _IndexForwardIter<_TermIndex_Freq, IndexForwardIter_Freq> {
-protected:
-    vector_u32 freq_cache;
-
-public:
-    using Base = _IndexForwardIter<_TermIndex_Freq, IndexForwardIter_Freq>;
-    friend Base;
-    IndexForwardIter_Freq(_TermIndex_Freq& _r) :Base(_r) {
-        freq_cache.reserve(g::RESERVE);
-    }
-
-    Posting next();
-    Posting nextGEQ(uint32_t target_did);
-
-protected:
-    void clear_cache();
-    void clear_other_cursor() {}
-    void load_other_cache();
-    void step_block();
-    inline void step_cache() { cur_cache++; }
-};
+        void read_next_block(std::ifstream& fin);
+        void write(bool end, bool write_did, std::ofstream& fout);
+        void clear();
+        inline void seek_fpos(std::ifstream& fin) {
+            fin.seekg(fpos);
+        }
+        inline void set_fpos(std::ifstream& fin) {
+            fpos = fin.tellg();
+        }
+    };
 
 
 
-template<uint32_t BLOCK>
-class IndexBackInserter_Freq :public _IndexBackInserter<_TermIndex_Freq, BLOCK, IndexBackInserter_Freq<BLOCK> > {
-protected:
-    vector_u32 freq_cache;
+    class FreqForwardIter :public _ForwardIter<Freq, FreqForwardIter> {
+    protected:
+        vector_u32 freq_cache;
 
-public:
-    // base class is not instantiated, so compiler doesn't know base class members' names!!
-    // HAVE TO use *this* or *Base::* due to name-lookup
-    using B = _IndexBackInserter<_TermIndex_Freq, BLOCK, IndexBackInserter_Freq<BLOCK> >;
-    friend B;
-    IndexBackInserter_Freq(_TermIndex_Freq& _r) :B(_r) {
-        B::construct(); freq_cache.reserve(g::RESERVE);
-    }
+    public:
+        using Base = _ForwardIter<Freq, FreqForwardIter>;
+        friend Base;
+        FreqForwardIter(Freq& _r) :Base(_r) {
+            freq_cache.reserve(g::RESERVE);
+        }
 
-protected:
-    void _append(Posting p);
-    void clear_cache();
-    void unload_other_cache(uint32_t lastdid, uint16_t didbsize);
-    void try_load_last_cache(uint32_t pre_did);
-};
+        Posting next();
+        Posting nextGEQ(uint32_t target_did);
+
+    protected:
+        void clear_cache();
+        void clear_other_cursor() {}
+        void load_other_cache();
+        void step_block();
+        inline void step_cache() { cur_cache++; }
+    };
 
 
 
-/* final TermIndex specialized class with iterators */
-template<uint32_t BLOCK = g::BLOCK>
-class TermIndex_Freq :public _TermIndex_Freq {
-    using _TermIndex_Freq::_TermIndex_Freq;
-public:
-    using ForwardIter = IndexForwardIter_Freq;
-    using BackInserter = typename IndexBackInserter_Freq<BLOCK>;
+    template<uint32_t BLOCK>
+    class FreqBackInserter :public _BackInserter<Freq, BLOCK, FreqBackInserter<BLOCK> > {
+    protected:
+        vector_u32 freq_cache;
 
-    inline ForwardIter begin() {
-        return ForwardIter(*this);
-    }
-    inline typename BackInserter back_inserter() {
-        return BackInserter(*this);
-    }
-};
+    public:
+        // base class is not instantiated, so compiler doesn't know base class members' names!!
+        // HAVE TO use *this* or *Base::* due to name-lookup
+        using B = _BackInserter<Freq, BLOCK, FreqBackInserter<BLOCK> >;
+        friend B;
+        FreqBackInserter(Freq& _r) :B(_r) {
+            B::construct(); freq_cache.reserve(g::RESERVE);
+        }
+
+    protected:
+        void _append(Posting p);
+        void clear_cache();
+        void unload_other_cache(uint32_t lastdid, uint16_t didbsize);
+        void try_load_last_cache(uint32_t pre_did);
+    };
+}
+
+
+
+namespace Index {
+    /* final TermIndex specialized class with iterators */
+    template<uint32_t BLOCK = g::BLOCK>
+    class Freq :public _Index::Freq {
+        using _Index::Freq::Freq;
+    public:
+        using ForwardIter = _Index::FreqForwardIter;
+        using BackInserter = typename _Index::FreqBackInserter<BLOCK>;
+
+        inline ForwardIter begin() {
+            return ForwardIter(*this);
+        }
+        inline typename BackInserter back_inserter() {
+            return BackInserter(*this);
+        }
+    };
+}
 
 
 #include "TermIndex_Freq.ipp"

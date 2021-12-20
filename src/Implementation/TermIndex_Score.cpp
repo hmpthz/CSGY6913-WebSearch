@@ -35,11 +35,11 @@ void Lexicon_Score::write(Iter iter) {
 }
 
 
-_TermIndex_Score::_TermIndex_Score(MemoryCounter& memcnt, Lexicon_Score::Iter& iter) :
+_Index::Score::Score(MemoryCounter& memcnt, Lexicon_Score::Iter& iter) :
     Base(memcnt, iter), scores(&memcnt) {
 }
 
-void _TermIndex_Score::read_next_block(std::ifstream& fin, std::ifstream& fin2) {
+void _Index::Score::read_next_block(std::ifstream& fin, std::ifstream& fin2) {
     std::istreambuf_iterator<char> ifiter(fin);
     std::istreambuf_iterator<char> ifiter2(fin2);
 
@@ -64,7 +64,7 @@ void _TermIndex_Score::read_next_block(std::ifstream& fin, std::ifstream& fin2) 
     blocks_meta.emplace_back(lastdid, didbsize, scorebsize);
 }
 
-void _TermIndex_Score::write(bool end, bool write_did, std::ofstream& fout, std::ofstream& fout2) {
+void _Index::Score::write(bool end, bool write_did, std::ofstream& fout, std::ofstream& fout2) {
     if (write_did) {
         // set start offset
         if (g::ival(info).start_off2 == -1) {
@@ -122,7 +122,7 @@ void _TermIndex_Score::write(bool end, bool write_did, std::ofstream& fout, std:
     }
 }
 
-void _TermIndex_Score::clear() {
+void _Index::Score::clear() {
     bytes.clear();
     blocks_meta.clear();
     scores.clear();

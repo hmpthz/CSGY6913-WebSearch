@@ -15,7 +15,7 @@ inline float BM25::score(Posting p, Index_t& index) {
 }
 
 
-inline PostScore IndexForwardIter_Score::next() {
+inline PostScore _Index::ScoreForwardIter::next() {
     auto p = PostScore(
         did_cache[cur_cache],
         r->scores[cur_score]);
@@ -23,7 +23,7 @@ inline PostScore IndexForwardIter_Score::next() {
     return p;
 }
 
-inline PostScore IndexForwardIter_Score::nextGEQ(uint32_t target_did) {
+inline PostScore _Index::ScoreForwardIter::nextGEQ(uint32_t target_did) {
     auto p = PostScore(
         did_cache[cur_cache],
         r->scores[cur_score]);
@@ -31,12 +31,12 @@ inline PostScore IndexForwardIter_Score::nextGEQ(uint32_t target_did) {
     return p;
 }
 
-inline void IndexForwardIter_Score::clear_cache() {
+inline void _Index::ScoreForwardIter::clear_cache() {
     cur_cache = 0;
     did_cache.clear();
 }
 
-inline void IndexForwardIter_Score::step_block() {
+inline void _Index::ScoreForwardIter::step_block() {
     cur_byte += r
         ->blocks_meta[cur_block].did_bsize;
     // get actual # of postings of a block
@@ -47,24 +47,24 @@ inline void IndexForwardIter_Score::step_block() {
 
 
 template<uint32_t BLOCK>
-inline void IndexBackInserter_Score<BLOCK>::_append(Posting p) {
+inline void _Index::ScoreBackInserter<BLOCK>::_append(Posting p) {
     B::did_cache.emplace_back(p.doc_id);
     B::r->scores.emplace_back(BM25::score(p, *B::r));
 }
 
 template<uint32_t BLOCK>
-inline void IndexBackInserter_Score<BLOCK>::_append(PostScore p) {
+inline void _Index::ScoreBackInserter<BLOCK>::_append(PostScore p) {
     B::did_cache.emplace_back(p.doc_id);
     B::r->scores.emplace_back(p.score);
 }
 
 template<uint32_t BLOCK>
-inline void IndexBackInserter_Score<BLOCK>::clear_cache() {
+inline void _Index::ScoreBackInserter<BLOCK>::clear_cache() {
     B::did_cache.clear();
 }
 
 template<uint32_t BLOCK>
-inline void IndexBackInserter_Score<BLOCK>::unload_other_cache(uint32_t lastdid, uint16_t didbsize) {
+inline void _Index::ScoreBackInserter<BLOCK>::unload_other_cache(uint32_t lastdid, uint16_t didbsize) {
     B::r->blocks_meta.emplace_back(
         lastdid, didbsize, (uint16_t)(B::did_cache.size() * sizeof(float)));
 }

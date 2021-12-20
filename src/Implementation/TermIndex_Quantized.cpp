@@ -1,12 +1,12 @@
 #include "TermIndex_Quantized.h"
 
 
-_TermIndex_Quantized::_TermIndex_Quantized(MemoryCounter& memcnt, Lexicon_Score::Iter& iter) :
+_Index::_Quantized::_Quantized(MemoryCounter& memcnt, Lexicon_Score::Iter& iter) :
     Base(memcnt, iter), bits(&memcnt) {
 
 }
 
-void _TermIndex_Quantized::read_next_block(std::ifstream& fin, std::ifstream& fin2) {
+void _Index::_Quantized::read_next_block(std::ifstream& fin, std::ifstream& fin2) {
     std::istreambuf_iterator<char> ifiter(fin);
     std::istreambuf_iterator<char> ifiter2(fin2);
 
@@ -24,7 +24,7 @@ void _TermIndex_Quantized::read_next_block(std::ifstream& fin, std::ifstream& fi
     blocks_meta.emplace_back(lastdid, didbsize, scorebsize);
 }
 
-void _TermIndex_Quantized::write(bool end, bool write_did, std::ofstream& fout, std::ofstream& fout2) {
+void _Index::_Quantized::write(bool end, bool write_did, std::ofstream& fout, std::ofstream& fout2) {
     if (write_did) {
         // set start offset
         if (g::ival(info).start_off2 == -1) {
@@ -81,7 +81,7 @@ void _TermIndex_Quantized::write(bool end, bool write_did, std::ofstream& fout, 
     }
 }
 
-void _TermIndex_Quantized::clear() {
+void _Index::_Quantized::clear() {
     bytes.clear();
     blocks_meta.clear();
     bits.clear();

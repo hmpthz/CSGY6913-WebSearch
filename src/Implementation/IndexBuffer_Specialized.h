@@ -5,7 +5,7 @@
 
 
 namespace InputBuffer {
-    class Freq :public _Base<TermIndex_Freq<>, Lexicon_Freq, Freq> {
+    class Freq :public _Base<Index::Freq<>, Lexicon_Freq, Freq> {
     public:
         inline void index_read_blocks(TermIndex& index) {
             index.try_read_blocks<false>(fin);
@@ -16,7 +16,7 @@ namespace InputBuffer {
     };
 
 
-    class Score :public _ScoreBase<TermIndex_Score<>, Score> {
+    class Score :public _ScoreBase<Index::Score<>, Score> {
     public:
         inline IndexForwardIter index_begin(TermIndex& index) {
             return index.begin();
@@ -26,7 +26,7 @@ namespace InputBuffer {
 
 
 namespace OutputBuffer {
-    class Score :public _ScoreBase<TermIndex_Score<>, Score> {
+    class Score :public _ScoreBase<Index::Score<>, Score> {
     public:
         inline IndexBackInserter index_back_inserter(TermIndex& index) {
             return index.back_inserter();

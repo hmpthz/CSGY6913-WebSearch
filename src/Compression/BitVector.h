@@ -3,6 +3,19 @@
 
 
 namespace Bits {
+    template<uint32_t BITS, uint32_t sub = 0>
+    inline uint32_t round(float x) {
+        constexpr float scale = (float)(1 << BITS) - sub - 0.501f;
+        return std::lroundf(x * scale);
+    }
+
+    template<uint32_t BITS, uint32_t sub = 0>
+    inline uint32_t deround(float x) {
+        constexpr float scale = 1.0f / ((float)(1 << BITS) - sub - 0.501f);
+        return x * scale;
+    }
+
+
     /*
     each block contains many bits, which are packed contiguously
     but different blocks may be separated by byte
