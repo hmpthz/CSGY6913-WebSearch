@@ -12,7 +12,7 @@
 
   - input buffer: 3200MB;	output buffer: 800MB
   - **7-way merge:** 7 files, so there's 1 run.
-  - ignore terms that have less than 2 postings.
+  - ignore terms that have less than 4 postings.
   - **Elapsed time:** 1min 39.4sec
 
 - Final files:
