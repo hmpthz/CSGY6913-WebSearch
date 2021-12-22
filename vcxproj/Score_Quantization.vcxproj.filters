@@ -40,9 +40,6 @@
     <ClCompile Include="..\src\Experiment\PyInterface.cpp">
       <Filter>Source\Experiment</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\Experiment\test.cpp">
-      <Filter>Source\Experiment</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\DocTable.h">
@@ -127,9 +124,6 @@
       <Filter>Source\Compression</Filter>
     </ClInclude>
     <ClInclude Include="..\src\Compression\LogQuantizer.h">
-      <Filter>Source\Compression</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\Compression\AdaptiveFloat.ipp">
       <Filter>Source\Compression</Filter>
     </ClInclude>
   </ItemGroup>

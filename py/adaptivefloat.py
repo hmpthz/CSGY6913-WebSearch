@@ -58,11 +58,28 @@ def adaptivfloat_origin(float_arr, n_bits=8, n_exp=4, bias = None):
     return float_out
 
 
-def quantize_mant(abs_mant, n_mant):
-    return None
+def quantize_mant(sign, abs_mant, n_mant):
+    eps = 0.501
+    # mant: [0.5, 1.0) -> [0.0, 1.0)
+    abs_mant = 2*abs_mant-1
+    q_mant = np.zeros(abs_mant.shape[0], dtype=int)
+    # q_mant: [2**m, 2**(m+1)-1]
+    q_mant[sign > 0] = np.round(abs_mant[sign > 0] * (2**n_mant-eps)) + 2**n_mant
+    # q_mant: [1, 2**m-1]
+    q_mant[sign < 0] = np.round(abs_mant[sign < 0] * (2**n_mant-1-eps)) + 1
+    return q_mant
 
 def dequantize_mant(q_mant, n_mant):
-    return None
+    eps = 0.501
+    pos_mask = q_mant >= 2**n_mant
+    neg_mask = (q_mant >= 1) & (q_mant < 2**n_mant)
+    q_mant[pos_mask] -= 2**n_mant
+    q_mant[neg_mask] -= 1
+    mant = np.zeros(q_mant.shape[0], dtype=float)
+    mant[pos_mask] = q_mant[pos_mask] / (2**n_mant-eps)
+    mant[neg_mask] = q_mant[neg_mask] / (2**n_mant-1-eps)
+    mant[mant != 0] = 0.5 * (mant[mant != 0] + 1)
+    return mant
 
 
 def adaptivfloat(arr, n_bits=8, n_exp=4):
@@ -89,7 +106,7 @@ def adaptivfloat(arr, n_bits=8, n_exp=4):
 
     # 3. get mant, exp (the format is different from IEEE float)
     mant, exp = np.frexp(arr)
-    q_mant = quantize_mant(mant, n_mant)
+    q_mant = quantize_mant(sign, mant, n_mant)
     mant = dequantize_mant(q_mant, n_mant)
     print(sign * mant * 2.0**exp)
 
@@ -110,5 +127,5 @@ def test_round_strategy(arr, n):
     print(mse1, mse2)
 
 # adaptivfloat_origin(np.array([-0.0015, -0.74, 12, 0]))
-# adaptivfloat(np.array([-0.0015, -0.74, 12, 0]))
-test_round_strategy(np.random.rand(100), 3)
+adaptivfloat(np.array([-0.0015, -0.74, 12, 0]))
+# test_round_strategy(np.random.rand(100), 3)

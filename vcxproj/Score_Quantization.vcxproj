@@ -14,7 +14,6 @@
     <ClCompile Include="..\src\Compression\VarBytes.cpp" />
     <ClCompile Include="..\src\DocTable.cpp" />
     <ClCompile Include="..\src\Experiment\PyInterface.cpp" />
-    <ClCompile Include="..\src\Experiment\test.cpp" />
     <ClCompile Include="..\src\Implementation\TermIndex_Freq.cpp" />
     <ClCompile Include="..\src\Implementation\TermIndex_Quantized.cpp" />
     <ClCompile Include="..\src\Implementation\TermIndex_Score.cpp" />
@@ -22,7 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Compression\AdaptiveFloat.h" />
-    <ClInclude Include="..\src\Compression\AdaptiveFloat.ipp" />
     <ClInclude Include="..\src\Compression\BitVector.h" />
     <ClInclude Include="..\src\Compression\BitVector.ipp" />
     <ClInclude Include="..\src\Compression\LinearQuantizer.h" />
@@ -61,13 +59,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>

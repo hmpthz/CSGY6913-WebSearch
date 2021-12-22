@@ -1,10 +1,20 @@
+#include "BitVector.h"
 
 
 template<uint32_t BITS>
 inline void Bits::ForwardIter<BITS>::set_byte(size_t i) {
-    ptr = &bytes[i];
+    ptr = &(*bytes)[i];
     b = *ptr;
     remain_bits_in_byte = 8;
+}
+
+template<uint32_t BITS>
+inline uint8_t Bits::ForwardIter<BITS>::next_byte() {
+    uint8_t cur_b = *ptr;
+    ptr++;
+    b = *ptr;
+    remain_bits_in_byte = 8;
+    return cur_b;
 }
 
 template<uint32_t BITS>
@@ -47,13 +57,19 @@ inline uint32_t Bits::ForwardIter<BITS>::next() {
 
 
 template<uint32_t BITS>
+inline void Bits::BackInserter<BITS>::append_byte(uint8_t b) {
+    bytes->emplace_back(b);
+    end_byte();
+}
+
+template<uint32_t BITS>
 inline void Bits::BackInserter<BITS>::append(uint32_t x) {
     int remain_bits_in_N = (int)BITS;
 
     while (true) {
         if (remain_bits_in_byte <= 0) {
-            bytes.emplace_back(0);
-            ptr = &bytes.back();
+            bytes->emplace_back(0);
+            ptr = &bytes->back();
             remain_bits_in_byte = 8;
         }
         

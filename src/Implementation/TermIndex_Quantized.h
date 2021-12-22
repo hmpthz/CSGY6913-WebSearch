@@ -34,6 +34,7 @@ namespace _Index {
 
     public:
         using B = _ForwardIter<TermIndex_t, Derived>;
+        friend B;
         _QuantizedForwardIter(TermIndex_t& _r) :B(_r), cur_byte2(0) {
             score_cache.reserve(g::RESERVE);
         }
@@ -57,8 +58,9 @@ namespace _Index {
 
     public:
         using B = _BackInserter<TermIndex_t, BLOCK, Derived>;
+        friend B;
         _QuantizedBackInserter(TermIndex_t& _r) :B(_r) {
-            B::contruct(); score_cache.reserve(g::RESERVE);
+            B::construct(); score_cache.reserve(g::RESERVE);
         }
 
     protected:

@@ -126,7 +126,7 @@ namespace Index {
         inline ForwardIter begin() {
             return ForwardIter(*this);
         }
-        inline typename BackInserter back_inserter() {
+        inline BackInserter back_inserter() {
             return BackInserter(*this);
         }
     };

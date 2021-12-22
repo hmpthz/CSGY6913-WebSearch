@@ -6,7 +6,7 @@ New York University
 
 ## ABSTRACT
 
-In this course, we've built a simple inverted index and used it to query. When the system processes a query, it must compute the impact scores using ranking functions such as BM25. A common solution for speeding up the process, is to precompute impact scores and store them in the index file to avoid computational overhead while querying. However, storing floating point numbers takes up a lot of space, and generic data compression algorithms do not provide the desired compression rate. So, quantization methods become important for saving space. We read recent papers on data compression and quantization for this final project and attempted to implement primitive linear quantization, logarithmic quantization, and a new method known as adaptive float. Finally, we visualized the results and ran several benchmarks to gain a better understanding of their performance.
+In this course, we've built a simple inverted index and used it for query. When the system processes a query, it must compute the impact scores using ranking functions such as BM25. A common solution for speeding up the process, is to precompute impact scores and store them in the index file to avoid computational overhead while querying. However, storing uncompressed floating point numbers takes up a lot of space, and generic data compression algorithms do not provide the desired compression rate. So, quantization methods become much more important. We read recent papers on data compression and quantization for this final project and attempted to implement primitive linear quantization, logarithmic quantization, and a new method called adaptive float. Finally, we visualized the results and ran several benchmarks to gain a better understanding of their performance.
 
 **KEYWORDS:** Inverted Index, Linear Quantization, Logarithmic Quantization, Adaptive Float
 
@@ -158,7 +158,7 @@ To save space, when floating point is quantized into bits of a certain width, th
 
 ### 4.4 Quantization
 
-When implementing linear quantization, as mentioned in section 3.1, we first map the values to real numbers of the range '[0, 1]' and then to integers of the range '[0, 2B-1]'. This brings up the question of whether we should multiply the real numbers by '2B' or by '2B-1' -- The former prompts dealing with integers '2B' that exceed the bit width, whereas the latter sacrifices some precision. During our experiments, we discovered that we can use a method that falls somewhere between the former and the latter. For example, setting 'eps=0.501' and multiplying by '2B-eps' before rounding avoids the problem of dealing with overflow values, also it has higher precision than multiplying by '2B-1'.
+When implementing linear quantization, as mentioned in section 3.1, we first map the values to real numbers of the range '[0, 1]' and then to integers of the range '[0, 2B-1]'. This brings up the question of whether we should multiply the real numbers by '2B' or by '2B-1' -- The former prompts dealing with integer '2B' that exceeds the bit width, whereas the latter sacrifices some precision. During our experiments, we discovered that we can use a method that falls somewhere between the former and the latter. For example, setting 'eps=0.501' and multiplying by '2B-eps' before rounding avoids the problem of dealing with overflow values, also it has higher precision than multiplying by '2B-1'.
 
 <eq5>
 <eq6>
@@ -176,7 +176,7 @@ eps = 0.501
 mant = 2*mant-1
 if sign < 0:
     # q_mant: [1, 2**m-1]
-    q_mant = round(mant * (2**m-1-eps))
+    q_mant = round(mant * (2**m-1-eps)) + 1
 elif sign > 0:
     # q_mant: [2**m, 2**(m+1)-1]
     q_mant = round(mant * (2**m-eps)) + 2**m

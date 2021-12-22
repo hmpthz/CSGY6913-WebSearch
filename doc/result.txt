@@ -1,7 +1,9 @@
 - Dataset: https://microsoft.github.io/msmarco/TREC-Deep-Learning-2020
 
   [fulldocs-new.trec](https://msmarco.blob.core.windows.net/msmarcoranking/msmarco-docs.trec.gz);	size: 21.4GB;	number of documents: 3,213,835
-  
+
+### Index Building:
+
 - Step1:
 
   - input buffer: 2100MB;	output buffer: 650MB
@@ -20,3 +22,6 @@
   - `doctable.bin`: 238MB;	average length: 1185.41
   - `lexicon.bin`: 51MB;	Total number of terms: 2,142,791
   - `index.bin`: 2.63GB
+
+### Experiments
+
