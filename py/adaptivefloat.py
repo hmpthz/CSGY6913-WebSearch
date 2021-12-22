@@ -78,7 +78,7 @@ def dequantize_mant(q_mant, n_mant):
     mant = np.zeros(q_mant.shape[0], dtype=float)
     mant[pos_mask] = q_mant[pos_mask] / (2**n_mant-eps)
     mant[neg_mask] = q_mant[neg_mask] / (2**n_mant-1-eps)
-    mant[mant != 0] = 0.5 * (mant[mant != 0] + 1)
+    mant[pos_mask | neg_mask] = 0.5 * (mant[pos_mask | neg_mask] + 1)
     return mant
 
 

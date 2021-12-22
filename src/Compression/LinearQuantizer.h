@@ -48,10 +48,16 @@ template<uint32_t BITS>
 inline void LinearQuantizer<BITS>::read(std::ifstream& fin) {
     fin.read((char*)&minval, sizeof(minval));
     fin.read((char*)&maxval, sizeof(maxval));
+
+    std::cout << "[minval] " << minval << '\n';
+    std::cout << "[maxval] " << maxval << '\n';
 }
 
 template<uint32_t BITS>
 inline void LinearQuantizer<BITS>::write(std::ofstream& fout) {
+    std::cout << "[minval] " << minval << '\n';
+    std::cout << "[maxval] " << maxval << '\n';
+
     fout.write((char*)&minval, sizeof(minval));
     fout.write((char*)&maxval, sizeof(maxval));
 }

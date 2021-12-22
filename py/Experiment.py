@@ -10,7 +10,6 @@ def task_precompute():
     filenames_input = index_filenames['origin']
     cdll_get_output = index_cdll_gets['output']['uncompressed-score']
     filenames_output = index_filenames['uncompressed-score']
-    print('#### precompute BM25 score ####')
     print('[input files] ', filename_doctbale, *filenames_input)
     print('[output files]', *filenames_output)
     print()
@@ -26,7 +25,20 @@ def task_precompute():
 
 def task_quantize():
     global t
-    pass
+    cdll_get_input = index_cdll_gets['input']['uncompressed-score']
+    filenames_input = index_filenames['uncompressed-score']
+    cdll_get_output = index_cdll_gets['output'][arg.type][arg.bits]
+    filenames_output = index_filenames[arg.type][arg.bits]
+    print('[input files] ', *filenames_input)
+    print('[output files]', *filenames_output)
+    print()
+
+    index_input = cdll_get_input(arg.buf, *(f.encode('ascii') for f in filenames_input))
+    index_output = cdll_get_output(arg.buf, False, *(f.encode('ascii') for f in filenames_output))
+
+    t = time.time()
+    tasks[arg.task]['cdll_f'][arg.type][arg.bits](index_input, index_output)
+    t = time.time() - t
 
 
 def task_speed_test():
@@ -34,12 +46,41 @@ def task_speed_test():
     if arg.type == 'origin':
         filename_doctbale = pjoin(arg.d, 'doctable.bin')
         cdll.load_doctable(filename_doctbale.encode('ascii'))
+    if arg.type == 'origin' or arg.type == 'uncompressed-score':
+        cdll_get_input = index_cdll_gets['input'][arg.type]
+        filenames_input = index_filenames[arg.type]
+    else:
+        cdll_get_input = index_cdll_gets['input'][arg.type][arg.bits]
+        filenames_input = index_filenames[arg.type][arg.bits]
+    print('[input files] ', *filenames_input)
+    print()
+
+    index_input = cdll_get_input(arg.buf, *(f.encode('ascii') for f in filenames_input))
+
+    t = time.time()
+    if arg.type == 'origin' or arg.type == 'uncompressed-score':
+        tasks[arg.task]['cdll_f'][arg.type](index_input)
+    else:
+        tasks[arg.task]['cdll_f'][arg.type][arg.bits](index_input)
+    t = time.time() - t
     
 
 def task_MSE():
     global t
-    pass
+    cdll_get_baseline = index_cdll_gets['input']['uncompressed-score']
+    filenames_baseline = index_filenames['uncompressed-score']
+    cdll_get_input = index_cdll_gets['input'][arg.type][arg.bits]
+    filenames_input = index_filenames[arg.type][arg.bits]
+    print('[baseline files] ', *filenames_baseline)
+    print('[input files] ', *filenames_input)
+    print()
 
+    index_baseline = cdll_get_baseline(arg.buf, *(f.encode('ascii') for f in filenames_baseline))
+    index_input = cdll_get_input(arg.buf, *(f.encode('ascii') for f in filenames_input))
+
+    t = time.time()
+    tasks[arg.task]['cdll_f'][arg.type][arg.bits](index_baseline, index_input)
+    t = time.time() - t
 
 
 def get_arguments() -> Namespace:

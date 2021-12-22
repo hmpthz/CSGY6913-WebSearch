@@ -11,6 +11,7 @@ namespace Task {
             float score = iter.next().score;
             dstbuf.quantizer.update_minmax(score);
         }
+
         srcbuf.reset_fpos();
         dstbuf.write_quantizer();
         Transfer::all_data(srcbuf, dstbuf);
@@ -24,6 +25,8 @@ namespace Task {
             float score = iter.next().score;
             dstbuf.quantizer.update_minmax(score);
         }
+        dstbuf.quantizer.log_minmax();
+
         srcbuf.reset_fpos();
         dstbuf.write_quantizer();
         Transfer::all_data(srcbuf, dstbuf);
@@ -70,6 +73,7 @@ namespace Task {
             n++;
         }
         double mse = sum / n;
+        std::cout << "[MSE] " << mse << '\n';
     }
 
     inline void get_sample_scores(InputBuffer::Score& buf) {

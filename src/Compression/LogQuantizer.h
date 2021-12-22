@@ -98,10 +98,20 @@ inline void LogQuantizer<BITS>::read(std::ifstream& fin) {
     fin.read((char*)&maxexp, sizeof(maxexp));
     fin.read((char*)&neg_minexp, sizeof(neg_minexp));
     fin.read((char*)&neg_maxexp, sizeof(neg_maxexp));
+
+    std::cout << "[minexp] " << minexp << '\n';
+    std::cout << "[maxexp] " << maxexp << '\n';
+    std::cout << "[neg_minexp] " << neg_minexp << '\n';
+    std::cout << "[neg_maxexp] " << neg_maxexp << '\n';
 }
 
 template<uint32_t BITS>
 inline void LogQuantizer<BITS>::write(std::ofstream& fout) {
+    std::cout << "[minexp] " << minexp << '\n';
+    std::cout << "[maxexp] " << maxexp << '\n';
+    std::cout << "[neg_minexp] " << neg_minexp << '\n';
+    std::cout << "[neg_maxexp] " << neg_maxexp << '\n';
+
     fout.write((char*)&minexp, sizeof(minexp));
     fout.write((char*)&maxexp, sizeof(maxexp));
     fout.write((char*)&neg_minexp, sizeof(neg_minexp));

@@ -112,7 +112,30 @@ void t_log() {
 }
 
 void t_adapt() {
+    constexpr uint32_t B = 12;
+    Bits::Vec bits;
+    AdaptiveFloatQuantizer<B, 4> quantizer;
+    Bits::BackInserter<B> bits_inserter(bits);
+    std::vector<float> scores1 = { -1.65, 0.67, 2.85, -0.23 };
+    std::vector<float> scores2 = { 1.17, 2.71 };
 
+    size_t bsize = bits.size();
+    quantizer.quantize(scores1, bits_inserter);
+    bits_inserter.end_byte();
+    bsize = bits.size() - bsize;
+    quantizer.quantize(scores2, bits_inserter);
+    bits_inserter.end_byte();
+
+
+    std::vector<float> scores3;
+    Bits::ForwardIter<B> bits_iter(bits);
+    bits_iter.set_byte(0);
+    quantizer.dequantize(bits_iter, scores3, 4);
+    bits_iter.set_byte(bsize);
+    quantizer.dequantize(bits_iter, scores3, 2);
+    for (float val : scores3) {
+        std::cout << val << ' ';
+    }
 }
 
 
@@ -121,7 +144,9 @@ int main() {
     //t_bits();
     //t_linear();
     //t_log();
-    InputBuffer::Linear<6> buf;
+    //t_adapt();
+    uint8_t a = (uint8_t)-16;
+    std::cout << (int)(int8_t)a;
 
     return 0;
 }

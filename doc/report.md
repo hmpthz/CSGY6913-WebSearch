@@ -187,17 +187,18 @@ elif sign > 0:
 
 ### 5.1 Sample Visualization
 
-在进行benchmark之前，我们从影响分数的数据集中抽取了一小部分数据，将原始数据和以典型的8比特宽度进行量化的数据进行了可视化，帮助我们更好的分析。
+Prior to benchmarking, we sampled a small portion of impact scores, visualized the original data, and quantized the data with a typical 8-bit width to aid in analysis. Figures 5, 6, and 7 show the distance between the quantized values and the ground truth values. Surprisingly, linear quantization produces the best results, whereas adaptive float produces the worst. We believe this is because the minimum and maximum values of linear and logarithmic quantization are computed specifically based on the data set, which is more accurate than adaptive float, which only computes a maximum exponent. More importantly, the span of values' range is narrow, so the advantage of adaptive float is compromised.
 
 ### 5.2 Benchmark
 
-Still fixing some issues about adaptive float, should be solved in 2 days.
+We denote Adaptive<B,E> as B bits with E bits exponents. Table 1 shows the elapsed time to retrieve all the scores from file, the mean square error (MSE) with ground truth and size of compressed file.
+
+As a result, we can conclude that linear quantization is the most effective method. Indeed, our impact score dataset accepts values in the range [-6.59891, 29.5973], and such a small range with 8 bits is sufficient to achieve a relatively high accuracy without the need to find exponents as with logarithmic or adaptive float. In terms of scores retrieval speed, the version without precomputation is even faster than some of the quantized versions. Based on our program profiling, we were acknowledged that this is due to the high frequency of bit operations requiring more CPU clock cycles than bytes that can be directly obtained from the address.
 
 ## 6 FUTURE WORKS
 
-量化以及压缩领域包含了太多的方法，而我们在本次期末项目中仅仅是实现了3种比较基础的量化方法，拥有很多的不足之处。比如说，实现的3种方法全部都是标量量化，而没有一种是矢量量化。根据许多文献中的实验结果，矢量量化所耗费的时间长、且算法难以收敛，但一般都能获得比标量量化更好的结果。似乎近年来没人采用这些矢量量化算法与搜索引擎的影响分数相结合并进行实验，因此值得我们尝试。并且，在量化之后还可以考虑使用上文中所描述的一些通用压缩方式进一步的压缩。
-更重要的是，由于时间不足，本次项目并没有真正实现不同量化方式的查询处理。然而，查询结果的质量对比才是搜索引擎中最需要关心的事情。在未来进一步的工作中，这些都需要充分考虑到。
-
+There are far too many methods in the field of quantization and compression, and we have only implemented three basic methods in this final project, which has numerous flaws. For example, all three methods implemented are scalar quantization; none are vector quantization. Many experiment results in the literature show that vector quantization takes a long time and is difficult to converge, but it generally produces better results than scalar quantization. No one appears to have used these vector quantization algorithms for impact scores in recent years, so it is worth a shot. Furthermore, after quantization, additional compression using some of the generics compression methods described above can be considered.
+Due to time constraints, this project did not implement the query processing in various methods. However, the most important aspect of a search engine is the quality of query results. These must be taken into full account in future work.
 
 ## REFERENCES
 

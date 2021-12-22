@@ -72,15 +72,15 @@ PY_API void test_adaptive10(InputBuffer::Adaptive<10, 4>* buf);
 PY_API void test_adaptive12(InputBuffer::Adaptive<12, 4>* buf);
 
 
-PY_API void MSE_linear6(InputBuffer::Score* baseline, InputBuffer::Linear<6>* dstbuf);
-PY_API void MSE_linear8(InputBuffer::Score* baseline, InputBuffer::Linear<8>* dstbuf);
-PY_API void MSE_linear10(InputBuffer::Score* baseline, InputBuffer::Linear<10>* dstbuf);
-PY_API void MSE_linear12(InputBuffer::Score* baseline, InputBuffer::Linear<12>* dstbuf);
-PY_API void MSE_log6(InputBuffer::Score* baseline, InputBuffer::Log<6>* dstbuf);
-PY_API void MSE_log8(InputBuffer::Score* baseline, InputBuffer::Log<8>* dstbuf);
-PY_API void MSE_log10(InputBuffer::Score* baseline, InputBuffer::Log<10>* dstbuf);
-PY_API void MSE_log12(InputBuffer::Score* baseline, InputBuffer::Log<12>* dstbuf);
-PY_API void MSE_adaptive6(InputBuffer::Score* baseline, InputBuffer::Adaptive<6, 3>* dstbuf);
-PY_API void MSE_adaptive8(InputBuffer::Score* baseline, InputBuffer::Adaptive<8, 4>* dstbuf);
-PY_API void MSE_adaptive10(InputBuffer::Score* baseline, InputBuffer::Adaptive<10, 4>* dstbuf);
-PY_API void MSE_adaptive12(InputBuffer::Score* baseline, InputBuffer::Adaptive<12, 4>* dstbuf);
+PY_API void MSE_linear6(InputBuffer::Score* baseline, InputBuffer::Linear<6>* buf);
+PY_API void MSE_linear8(InputBuffer::Score* baseline, InputBuffer::Linear<8>* buf);
+PY_API void MSE_linear10(InputBuffer::Score* baseline, InputBuffer::Linear<10>* buf);
+PY_API void MSE_linear12(InputBuffer::Score* baseline, InputBuffer::Linear<12>* buf);
+PY_API void MSE_log6(InputBuffer::Score* baseline, InputBuffer::Log<6>* buf);
+PY_API void MSE_log8(InputBuffer::Score* baseline, InputBuffer::Log<8>* buf);
+PY_API void MSE_log10(InputBuffer::Score* baseline, InputBuffer::Log<10>* buf);
+PY_API void MSE_log12(InputBuffer::Score* baseline, InputBuffer::Log<12>* buf);
+PY_API void MSE_adaptive6(InputBuffer::Score* baseline, InputBuffer::Adaptive<6, 3>* buf);
+PY_API void MSE_adaptive8(InputBuffer::Score* baseline, InputBuffer::Adaptive<8, 4>* buf);
+PY_API void MSE_adaptive10(InputBuffer::Score* baseline, InputBuffer::Adaptive<10, 4>* buf);
+PY_API void MSE_adaptive12(InputBuffer::Score* baseline, InputBuffer::Adaptive<12, 4>* buf);

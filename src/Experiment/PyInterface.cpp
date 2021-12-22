@@ -211,39 +211,39 @@ void test_adaptive12(InputBuffer::Adaptive<12, 4>* buf) {
 }
 
 
-void MSE_linear6(InputBuffer::Score* baseline, InputBuffer::Linear<6>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_linear6(InputBuffer::Score* baseline, InputBuffer::Linear<6>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_linear8(InputBuffer::Score* baseline, InputBuffer::Linear<8>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_linear8(InputBuffer::Score* baseline, InputBuffer::Linear<8>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_linear10(InputBuffer::Score* baseline, InputBuffer::Linear<10>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_linear10(InputBuffer::Score* baseline, InputBuffer::Linear<10>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_linear12(InputBuffer::Score* baseline, InputBuffer::Linear<12>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_linear12(InputBuffer::Score* baseline, InputBuffer::Linear<12>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_log6(InputBuffer::Score* baseline, InputBuffer::Log<6>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_log6(InputBuffer::Score* baseline, InputBuffer::Log<6>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_log8(InputBuffer::Score* baseline, InputBuffer::Log<8>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_log8(InputBuffer::Score* baseline, InputBuffer::Log<8>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_log10(InputBuffer::Score* baseline, InputBuffer::Log<10>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_log10(InputBuffer::Score* baseline, InputBuffer::Log<10>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_log12(InputBuffer::Score* baseline, InputBuffer::Log<12>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_log12(InputBuffer::Score* baseline, InputBuffer::Log<12>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_adaptive6(InputBuffer::Score* baseline, InputBuffer::Adaptive<6, 3>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_adaptive6(InputBuffer::Score* baseline, InputBuffer::Adaptive<6, 3>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_adaptive8(InputBuffer::Score* baseline, InputBuffer::Adaptive<8, 4>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_adaptive8(InputBuffer::Score* baseline, InputBuffer::Adaptive<8, 4>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_adaptive10(InputBuffer::Score* baseline, InputBuffer::Adaptive<10, 4>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_adaptive10(InputBuffer::Score* baseline, InputBuffer::Adaptive<10, 4>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }
-void MSE_adaptive12(InputBuffer::Score* baseline, InputBuffer::Adaptive<12, 4>* dstbuf) {
-    PRINT_FUNCNAME(); Task::MSE(*baseline, *dstbuf);
+void MSE_adaptive12(InputBuffer::Score* baseline, InputBuffer::Adaptive<12, 4>* buf) {
+    PRINT_FUNCNAME(); Task::MSE(*baseline, *buf);
 }

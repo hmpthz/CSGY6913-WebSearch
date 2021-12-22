@@ -25,3 +25,57 @@
 
 ### Experiments
 
+- precompute: 4.65GB 2min 20.0sec
+
+- quantize:
+
+  - linear6: 966MB 2min 10.9sec
+  - linear8: 1.22GB 2min 6.8sec
+  - linear10: 1.51GB 2min 9.2sec
+  - linear12: 1.79GB 2min 10.0sec
+    [minval] -6.59891
+    [maxval] 29.5973
+  - log6: 2min 42.6sec
+  - log8: 2min 45.1sec
+  - log10: 2min 43.6sec
+  - log12: 2min 44.9sec
+    [minexp] -11.0725
+    [maxexp] 4.88739
+    [neg_minexp] -9.50977
+    [neg_maxexp] 2.72223
+  - adaptive6: 977MB 2min 6.3sec
+  - adaptive8: 1.23GB 2min 7.2sec
+  - adaptive10: 1.52GB 2min 11.7sec
+  - adaptive12: 1.81GB 2min 12.3sec
+
+- speed:
+
+  - origin: 40.7sec
+  - uncompressed: 38.9sec
+  - linear6: 31.2sec
+  - linear8: 31.9sec
+  - linear10: 35.3sec
+  - linear12: 37.3sec
+  - log6: 36.4sec
+  - log8: 35.9sec
+  - log10: 40.4sec
+  - log12: 42.3sec
+  - adaptive6: 34.7sec
+  - adaptive8: 32.8sec
+  - adaptive10: 39.9sec
+  - adaptive12: 43.1sec
+
+- MSE:
+
+  - linear6: 0.0266707 1min 10.9sec
+  - linear8: 0.00167407 1min 11.4sec
+  - linear10: 0.000104239 1min 15.5sec
+  - linear12: 6.50873e-06 1min 17.3sec
+  - log6: 0.201164 1min 24.8sec
+  - log8: 0.0121823 1min 24.8sec
+  - log10: 0.000757132 1min 30.1sec
+  - log12: 4.72691e-05 1min 31.6sec
+  - adaptive6: 0.0725162 1min 22.4sec
+  - adaptive8: 0.0157352 1min 22.9sec
+  - adaptive10: 0.000895969 1min 26.9sec
+  - adaptive12: 5.46161e-05 1min 28.3sec
