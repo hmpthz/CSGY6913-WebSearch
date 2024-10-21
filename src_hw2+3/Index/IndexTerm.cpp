@@ -17,7 +17,7 @@ IndexTerm::IndexTerm(LexiconIter iter) {
 }
 
 size_t IndexTerm::byte_size() {
-    return bytes.size() + (size_t)block_size() * g::SIZE::BLOCKMETA + g::SIZE::INDEXTERM;
+    return b.byte_size() + (size_t)block_size() * g::SIZE::BLOCKMETA + g::SIZE::INDEXTERM;
 }
 
 Posting IndexTerm::get_next() {
@@ -97,12 +97,12 @@ void IndexTerm::load_cache() {
     uint16_t didbsize = blocks_info[cur_block].did_bsize;
     uint16_t freqbsize = blocks_info[cur_block].freq_bsize;
 
-    bytes.decompress(cur_byte, didbsize, did_cache);
+    b.decompress(cur_byte, didbsize, did_cache);
     CompressedBytes::undifference(pre_did, did_cache);
     // move cursor
     cur_byte += didbsize;
 
-    bytes.decompress(cur_byte, freqbsize, freq_cache);
+    b.decompress(cur_byte, freqbsize, freq_cache);
     // move cursor
     cur_byte += freqbsize;
     cur_block++;
@@ -120,8 +120,8 @@ size_t IndexTerm::unload_cache() {
 
     CompressedBytes::difference(pre_did, did_cache);
 
-    uint16_t didbsize = bytes.compress(did_cache);
-    uint16_t freqbsize = bytes.compress(freq_cache);
+    uint16_t didbsize = b.compress(did_cache);
+    uint16_t freqbsize = b.compress(freq_cache);
 
     blocks_info.emplace_back(lastdid, didbsize, freqbsize);
     size_t sz = (size_t)didbsize + (size_t)freqbsize + g::SIZE::BLOCKMETA;
@@ -155,72 +155,15 @@ size_t IndexTerm::reset_read_state() {
 size_t IndexTerm::clear_bytes() {
     if (block_size() == 0) return 0;
     start_did = blocks_info.back().last_did;
-    size_t sz = bytes.size() + (size_t)block_size() * g::SIZE::BLOCKMETA;
+    size_t sz = b.byte_size() + (size_t)block_size() * g::SIZE::BLOCKMETA;
     cur_block = 0;
     cur_byte = 0;
-    bytes.clear();
+    b.bytes.clear();
     blocks_info.clear();
     return sz;
 }
 
-#ifndef TEXT_FILE
-/* I/O File in binary format */
-
-size_t IndexTerm::read_next_block(std::ifstream& fin) {
-    // seek to correct position
-    fin.seekg(cur_fpos);
-
-    std::istreambuf_iterator<char> ifiter(fin);
-    
-    uint32_t lastdid;
-    uint16_t didbsize, freqbsize;
-    fin.read((char*)&lastdid, sizeof(lastdid));
-    fin.read((char*)&didbsize, sizeof(didbsize));
-    fin.read((char*)&freqbsize, sizeof(freqbsize));
-
-    std::copy_n(ifiter, didbsize, std::back_inserter(bytes));
-    ifiter++; // IMPORTANT!!
-    std::copy_n(ifiter, freqbsize, std::back_inserter(bytes));
-    ifiter++; // IMPORTANT!!
-    // set cur_fpos
-    cur_fpos = fin.tellg();
-
-    blocks_info.emplace_back(lastdid, didbsize, freqbsize);
-    size_t sz = (size_t)didbsize + (size_t)freqbsize + g::SIZE::BLOCKMETA;
-    return sz;
-}
-
-void IndexTerm::write_bytes(std::ofstream& fout, bool end) {
-    // set start offset
-    if (g::ival(info).start_offset == -1) {
-        g::ival(info).start_offset = fout.tellp();
-    }
-
-    std::ostreambuf_iterator<char> ofiter(fout);
-
-    cur_byte = 0;
-    // write all blocks
-    for (auto& meta : blocks_info) {
-        fout.write((char*)&meta.last_did, sizeof(meta.last_did));
-        fout.write((char*)&meta.did_bsize, sizeof(meta.did_bsize));
-        fout.write((char*)&meta.freq_bsize, sizeof(meta.freq_bsize));
-
-        std::copy_n(bytes.begin() + cur_byte, meta.did_bsize, ofiter);
-        // move cursor
-        cur_byte += meta.did_bsize;
-        std::copy_n(bytes.begin() + cur_byte, meta.freq_bsize, ofiter);
-        // move cursor
-        cur_byte += meta.freq_bsize;
-    }
-
-    if (end) {
-        // minus 1 to make sure is_endfile
-        g::ival(info).end_offset = (size_t)fout.tellp() - 1;
-        ofiter = '\0';
-    }
-}
-
-#else
+#ifdef TEXT_FILE
 /* I/O File in text format */
 
 size_t IndexTerm::read_next_block(std::ifstream& fin) {
@@ -258,8 +201,8 @@ size_t IndexTerm::read_next_block(std::ifstream& fin) {
     else pre_did = start_did;
     CompressedBytes::difference(pre_did, tmp_did);
 
-    uint16_t didbsize = bytes.compress(tmp_did);
-    uint16_t freqbsize = bytes.compress(tmp_freq);
+    uint16_t didbsize = b.compress(tmp_did);
+    uint16_t freqbsize = b.compress(tmp_freq);
     // clear tmp cache
     tmp_did.clear();
     tmp_freq.clear();
@@ -292,12 +235,12 @@ void IndexTerm::write_bytes(std::ofstream& fout, bool end) {
         }
         else pre_did = start_did;
 
-        bytes.decompress(cur_byte, meta.did_bsize, tmp_did);
+        b.decompress(cur_byte, meta.did_bsize, tmp_did);
         CompressedBytes::undifference(pre_did, tmp_did);
         // move cursor
         cur_byte += meta.did_bsize;
 
-        bytes.decompress(cur_byte, meta.freq_bsize, tmp_freq);
+        b.decompress(cur_byte, meta.freq_bsize, tmp_freq);
         // move cursor
         cur_byte += meta.freq_bsize;
 
@@ -320,6 +263,63 @@ void IndexTerm::write_bytes(std::ofstream& fout, bool end) {
         // minus 1 to make sure is_endfile
         g::ival(info).end_offset = (size_t)fout.tellp() - 1;
         fout << '#' << '\n';
+    }
+}
+
+#else
+/* I/O File in binary format */
+
+size_t IndexTerm::read_next_block(std::ifstream& fin) {
+    // seek to correct position
+    fin.seekg(cur_fpos);
+
+    std::istreambuf_iterator<char> ifiter(fin);
+    
+    uint32_t lastdid;
+    uint16_t didbsize, freqbsize;
+    fin.read((char*)&lastdid, sizeof(lastdid));
+    fin.read((char*)&didbsize, sizeof(didbsize));
+    fin.read((char*)&freqbsize, sizeof(freqbsize));
+
+    std::copy_n(ifiter, didbsize, std::back_inserter(b.bytes));
+    ifiter++; // IMPORTANT!!
+    std::copy_n(ifiter, freqbsize, std::back_inserter(b.bytes));
+    ifiter++; // IMPORTANT!!
+    // set cur_fpos
+    cur_fpos = fin.tellg();
+
+    blocks_info.emplace_back(lastdid, didbsize, freqbsize);
+    size_t sz = (size_t)didbsize + (size_t)freqbsize + g::SIZE::BLOCKMETA;
+    return sz;
+}
+
+void IndexTerm::write_bytes(std::ofstream& fout, bool end) {
+    // set start offset
+    if (g::ival(info).start_offset == -1) {
+        g::ival(info).start_offset = fout.tellp();
+    }
+
+    std::ostreambuf_iterator<char> ofiter(fout);
+
+    cur_byte = 0;
+    // write all blocks
+    for (auto& meta : blocks_info) {
+        fout.write((char*)&meta.last_did, sizeof(meta.last_did));
+        fout.write((char*)&meta.did_bsize, sizeof(meta.did_bsize));
+        fout.write((char*)&meta.freq_bsize, sizeof(meta.freq_bsize));
+
+        std::copy_n(b.bytes.begin() + cur_byte, meta.did_bsize, ofiter);
+        // move cursor
+        cur_byte += meta.did_bsize;
+        std::copy_n(b.bytes.begin() + cur_byte, meta.freq_bsize, ofiter);
+        // move cursor
+        cur_byte += meta.freq_bsize;
+    }
+
+    if (end) {
+        // minus 1 to make sure is_endfile
+        g::ival(info).end_offset = (size_t)fout.tellp() - 1;
+        ofiter = '\0';
     }
 }
 

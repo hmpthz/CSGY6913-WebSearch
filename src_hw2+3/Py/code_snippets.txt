@@ -1,0 +1,26 @@
+## find non-ascii characters
+[^\x00-\x7f]
+
+## RegexpTokenizer('[^\W_]+')
+
+## match token
+re.search(r'(^|[\W_])(word)([\W_]|$)', string)
+
+## remove url-like string
+p = re.compile(r'\w+://\w+\.\S+')
+string = p.sub('', string)
+
+## pickle
+def read_obj(filename):
+    with open(filename, 'rb') as f:
+        obj = pickle.load(f)
+    return obj
+
+def write_obj(obj, filename):
+    with open(filename, 'wb') as f:
+        pickle.dump(obj, f)
+
+## flatten list
+import functools
+import operator
+functools.reduce(operator.iconcat, a, [])

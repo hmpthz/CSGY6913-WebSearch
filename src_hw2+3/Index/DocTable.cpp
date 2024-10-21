@@ -32,7 +32,32 @@ void DocTable::clear(bool remain_statistics) {
     table.clear();
 }
 
-#ifndef TEXT_FILE
+#ifdef TEXT_FILE
+/* I/O File in text format */
+
+void DocTable::read_all() {
+    fin >> avg_len;
+    while (true) {
+        uint64_t offset;
+        uint32_t len;
+        std::string s;
+
+        fin >> offset >> len >> s;
+        if (fin.tellg() != -1) {
+            append_doc(offset, len, s);
+        }
+        else break;
+    }
+}
+
+void DocTable::write_all() {
+    fout << avg_len << '\n';
+    for (auto& item : table) {
+        fout << item.start_offset << ' ' << item.len << ' ' << item.url << '\n';
+    }
+}
+
+#else
 /* I/O File in binary format */
 
 void DocTable::read_all() {
@@ -49,7 +74,7 @@ void DocTable::read_all() {
         fin.read((char*)&len, sizeof(len));
         g::copy_until_zero(ifiter, ifiter_end, std::back_inserter(s));
 
-        if (!fin.eof()) {
+        if (fin.tellg() != -1) {
             append_doc(offset, len, s);
         }
         else break;
@@ -62,31 +87,6 @@ void DocTable::write_all() {
         fout.write((char*)&item.start_offset, sizeof(item.start_offset));
         fout.write((char*)&item.len, sizeof(item.len));
         fout << item.url << '\0';
-    }
-}
-
-#else
-/* I/O File in text format */
-
-void DocTable::read_all() {
-    fin >> avg_len;
-    while (true) {
-        uint64_t offset;
-        uint32_t len;
-        std::string s;
-
-        fin >> offset >> len >> s;
-        if (!fin.eof()) {
-            append_doc(offset, len, s);
-        }
-        else break;
-    }
-}
-
-void DocTable::write_all() {
-    fout << avg_len << '\n';
-    for (auto& item : table) {
-        fout << item.start_offset << ' ' << item.len << ' ' << item.url << '\n';
     }
 }
 

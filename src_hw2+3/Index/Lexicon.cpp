@@ -48,7 +48,30 @@ void Lexicon::clear() {
     terms.clear();
 }
 
-#ifndef TEXT_FILE
+#ifdef TEXT_FILE
+/* I/O File in text format */
+
+LexiconIter Lexicon::read_next() {
+    std::string term;
+    uint64_t start, end;
+    uint32_t n;
+    fin >> term >> start >> end >> n;
+    if (fin.tellg() != -1) {
+        return append_term(term, start, end, n);
+    }
+    else {
+        throw g::Exception::LexiconEndInFile;
+    }
+}
+
+void Lexicon::write(LexiconIter iter) {
+    fout << g::ikey(iter) << ' ';
+    auto& val = g::ival(iter);
+    fout << val.start_offset << ' ' << val.end_offset << ' '
+        << val.n_docs << '\n';
+}
+
+#else
 /* I/O File in binary format */
 
 LexiconIter Lexicon::read_next() {
@@ -64,7 +87,7 @@ LexiconIter Lexicon::read_next() {
     fin.read((char*)&end, sizeof(end));
     fin.read((char*)&n, sizeof(n));
 
-    if (!fin.eof()) {
+    if (fin.tellg() != -1) {
         return append_term(term, start, end, n);
     }
     else {
@@ -78,29 +101,6 @@ void Lexicon::write(LexiconIter iter) {
     fout.write((char*)&val.start_offset, sizeof(val.start_offset));
     fout.write((char*)&val.end_offset, sizeof(val.end_offset));
     fout.write((char*)&val.n_docs, sizeof(val.n_docs));
-}
-
-#else
-/* I/O File in text format */
-
-LexiconIter Lexicon::read_next() {
-    std::string term;
-    uint64_t start, end;
-    uint32_t n;
-    fin >> term >> start >> end >> n;
-    if (!fin.eof()) {
-        return append_term(term, start, end, n);
-    }
-    else {
-        throw g::Exception::LexiconEndInFile;
-    }
-}
-
-void Lexicon::write(LexiconIter iter) {
-    fout << g::ikey(iter) << ' ';
-    auto& val = g::ival(iter);
-    fout << val.start_offset << ' ' << val.end_offset << ' '
-        << val.n_docs << '\n';
 }
 
 #endif

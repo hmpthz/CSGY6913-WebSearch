@@ -30,7 +30,7 @@ protected:
     uint32_t cur_block;
     size_t cur_byte;
 
-    CompressedBytes bytes;
+    CompressedBytes b;
     /* associated to CompressedBytes, uncompressed cache don't have meta data */
     std::vector<BlockMetaData> blocks_info;
     /* a block of uncompressed, undifferenced doc_id and frequency cache */

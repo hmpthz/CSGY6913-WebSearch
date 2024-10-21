@@ -28,8 +28,6 @@ PY_API void open_output_doctable_file(Builder* builder, const char* filename);
 PY_API void open_inputbufs_file(Builder* builder, PyObject* index_filename_list, PyObject* lexicon_filename_list);
 PY_API void open_outputbuf_file(Builder* builder, const char* index_filename, const char* lexicon_filename);
 
-PY_API float postingbuf_capacity_percent(Builder* builder);
-
 PY_API void add_doc_info(Builder* builder, uint64_t start_offset, uint32_t len, const char* url);
 /* use python to parse and tokenize documents 
 convert python tokens list to PostingsMap, and add into PostingsBuffer

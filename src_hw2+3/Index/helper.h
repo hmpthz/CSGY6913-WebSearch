@@ -14,11 +14,11 @@ using vector_u64 = std::vector<uint64_t>;
 /* global parameters and methods */
 namespace g {
     /* # of postings per block */
-    constexpr uint32_t BLOCK = 128;
+    constexpr uint32_t BLOCK = 64;
     /* # of blocks per term
     don't keep the complete index of a term in memory because it can be large
     during merging there's no limit. used for query cache */
-    constexpr uint32_t N_BLOCKS = 32768;
+    constexpr uint32_t N_BLOCKS = 65535;
     constexpr uint32_t MB = (uint32_t)1E6;
 
     /* All exceptions used for projects */
@@ -54,8 +54,13 @@ namespace g {
 
 
 /* varbyte compression */
-class CompressedBytes :public vector_u8 {
+class CompressedBytes {
 public:
+    vector_u8 bytes;
+
+    inline size_t byte_size() {
+        return bytes.size();
+    }
     /* compress the data and append into bytes vecotr
     [return]
     size of compressed data in bytes

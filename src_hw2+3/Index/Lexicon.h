@@ -101,9 +101,6 @@ public:
     inline bool is_empty() {
         return terms.size() == 0;
     }
-    inline float capacity_percent() {
-        return ((100.0f * byte_size) / capacity);
-    }
 
     void add_postings(uint32_t doc_id, const PostingsMap& postings);
 

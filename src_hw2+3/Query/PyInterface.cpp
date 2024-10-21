@@ -76,7 +76,7 @@ void delete_QueryProcessor(Query* processor) {
     delete processor;
 }
 
-void delete_QueryResult(cQueryResultArray* query_res, cQueryTermsArray* terms_info) {
+void delete_QueryResult(cQueryResultArray* query_res, cTermsInfoArray* terms_info) {
     delete query_res;
     delete terms_info;
 }
@@ -88,7 +88,7 @@ void delete_all() {
     Query::icache = NULL;
 }
 
-cQueryTermsArray* get_QueryTerms(PyObject* term_list, cQueryResultArray* query_res) {
+cTermsInfoArray* get_TermsInfo(PyObject* term_list, cQueryResultArray* query_res) {
     // suppose these terms are all valid, so don't have to catch exception
     std::vector<IndexTermIter> iiters;
     Py_ssize_t len = PyList_Size(term_list);
@@ -97,7 +97,7 @@ cQueryTermsArray* get_QueryTerms(PyObject* term_list, cQueryResultArray* query_r
         auto iiter = Query::icache->get_index(PyBytes_AsString(term_obj));
         iiters.emplace_back(iiter);
     }
-    return new cQueryTermsArray(iiters, query_res);
+    return new cTermsInfoArray(iiters, query_res);
 }
 
 cQueryResultArray* test_query_result() {
@@ -113,10 +113,10 @@ cQueryResultArray* test_query_result() {
     return res;
 }
 
-cQueryTermsArray::cQueryTermsArray(std::vector<IndexTermIter>& iiters, cQueryResultArray* query_res) {
+cTermsInfoArray::cTermsInfoArray(std::vector<IndexTermIter>& iiters, cQueryResultArray* query_res) {
     terms_n_docs = new uint32_t[iiters.size()];
     n = query_res->n;
-    arr = new cQueryTerms[n];
+    arr = new cTermsInfo[n];
 
     for (int i = 0; i < iiters.size(); i++) {
         terms_n_docs[i] = g::ival(iiters[i]->info).n_docs;
@@ -155,7 +155,7 @@ cQueryTermsArray::cQueryTermsArray(std::vector<IndexTermIter>& iiters, cQueryRes
     }
 }
 
-cQueryTermsArray::~cQueryTermsArray() {
+cTermsInfoArray::~cTermsInfoArray() {
     delete terms_n_docs;
     for (int i = 0; i < n; i++) {
         delete arr[i].idxs;

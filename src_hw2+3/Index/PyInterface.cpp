@@ -46,10 +46,6 @@ void open_outputbuf_file(Builder* builder, const char* index_filename, const cha
     builder->outputbuf.lex.open_fout(lexicon_filename);
 }
 
-float postingbuf_capacity_percent(Builder* builder) {
-    return builder->postingbuf.capacity_percent();
-}
-
 void add_doc_info(Builder* builder, uint64_t start_offset, uint32_t len, const char* url) {
     std::string _url = url;
     builder->doctable.append_doc(start_offset, len, _url);

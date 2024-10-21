@@ -8,7 +8,7 @@ uint16_t CompressedBytes::compress(const vector_u32& data) {
 
     for (auto val : data) {
         if (val == 0) {
-            emplace_back(0);
+            bytes.emplace_back(0);
             total += 1;
             continue;
         }
@@ -26,7 +26,7 @@ uint16_t CompressedBytes::compress(const vector_u32& data) {
         total += stack.size();
         // append into bytes vector
         do {
-            emplace_back(stack.top());
+            bytes.emplace_back(stack.top());
             stack.pop();
         } while (stack.size() > 0);
     }
@@ -36,9 +36,9 @@ uint16_t CompressedBytes::compress(const vector_u32& data) {
 void CompressedBytes::decompress(size_t start, size_t len, vector_u32& data) {
     uint32_t val = 0;
     
-    auto end = std::min(start + len, size());
+    auto end = std::min(start + len, bytes.size());
     for (size_t i = start; i < end; i++) {
-        auto b = (*this)[i];
+        auto b = bytes[i];
         if (b < 0b10000000) {
             // highest bit is 0, so it's the last byte of an integer
             data.emplace_back(val + b);
@@ -54,7 +54,7 @@ void CompressedBytes::decompress(size_t start, size_t len, vector_u32& data) {
 }
 
 void CompressedBytes::difference(uint32_t pre, vector_u32& data) {
-    for (auto& val : data) {
+    for (auto&& val : data) {
         auto tmp = val;
         val -= pre;
         pre = tmp;
@@ -62,7 +62,7 @@ void CompressedBytes::difference(uint32_t pre, vector_u32& data) {
 }
 
 void CompressedBytes::undifference(uint32_t pre, vector_u32& data) {
-    for (auto& val : data) {
+    for (auto&& val : data) {
         val += pre;
         pre = val;
     }
